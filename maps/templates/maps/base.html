@@ -34,9 +34,9 @@
             {% endblock %}
             <ul class="navbar-nav mr-auto">
               <li class="nav-item"><a class="nav-link" href="{% url 'app:map-list' %}">Maps</a></li>
-              <li class="nav-item"><a class="nav-link" href="{% url 'app:map-new' %}">Create New Map</a></li>
               <li class="nav-item"><a class="nav-link" href="/api/">API</a></li>
             </ul>
+            <a class="btn btn-primary float-right" href="{% url 'app:map-new' %}">Create new map</a>
           </div>
         </nav>
       {% endblock %}

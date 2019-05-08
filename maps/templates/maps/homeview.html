@@ -1,6 +1,6 @@
 {% extends "maps/base.html" %}
 
-{% block title %}Recent Maps <a class="btn btn-lg btn-primary float-right" href="{% url 'app:map-new' %}">Create new map</a>{% endblock %}
+{% block title %}Recent Maps{% endblock %}
 
 {% block content %}
 <table class="table">
@@ -14,5 +14,5 @@
   <tr><td>No arrangement maps.</td></tr>
 {% endfor %}
 </table>
-<a class="btn btn-primary" href="{% url 'app:map-list' %}">View all maps</a>
+<a class="btn btn-secondary" href="{% url 'app:map-list' %}">View all maps</a>
 {% endblock %}
