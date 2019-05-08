@@ -1,5 +1,5 @@
-from django.urls import reverse
-from django.views.generic import TemplateView, CreateView, ListView, DetailView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import TemplateView, CreateView, DeleteView, DetailView, ListView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from .models import ArrangementMap
@@ -13,6 +13,11 @@ class HomeView(TemplateView):
         context = super(HomeView, self).get_context_data()
         context['recent_maps'] = ArrangementMap.objects.all().order_by('-modified')
         return context
+
+
+class MapsDeleteView(DeleteView):
+    model = ArrangementMap
+    success_url = reverse_lazy('app:map-list')
 
 
 class MapsDetailView(DetailView):

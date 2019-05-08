@@ -9,6 +9,7 @@
   <td><a href="{% url 'app:map-detail' map.pk %}">{{map.title}}</a></td>
   <td>Created {{map.created}}</td>
   <td>Modified {{map.modified}}</td>
+  <td><a href="{% url 'app:map-delete' map.pk %}" class="btn btn-danger">Delete</a></td>
 </tr>
 {% empty %}
   <tr><td>No arrangement maps.</td></tr>

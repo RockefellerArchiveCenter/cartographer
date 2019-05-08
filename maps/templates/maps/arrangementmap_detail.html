@@ -1,6 +1,9 @@
 {% extends "maps/base.html" %}
 
-{% block title %}{{object.title}}{% endblock %}
+{% block title %}
+  {{object.title}}
+  <a href="{% url 'app:map-delete' object.pk %}" class="btn btn-danger float-right">Delete</a>
+{% endblock %}
 
 {% block content %}
 <p class="text-muted">created {{object.created}}</p>
