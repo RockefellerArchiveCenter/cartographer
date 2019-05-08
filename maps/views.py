@@ -1,6 +1,6 @@
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView, ListView, DetailView
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from .models import ArrangementMap
 from .serializers import ArrangementMapSerializer, ArrangementMapListSerializer
@@ -32,7 +32,7 @@ class MapsNewView(CreateView):
         return reverse('app:map-detail', kwargs={'pk': self.object.pk})
 
 
-class ArrangementMapViewset(ModelViewSet):
+class ArrangementMapViewset(ReadOnlyModelViewSet):
     """
     retrieve:
     Return data about a Collection, identified by a primary key.
