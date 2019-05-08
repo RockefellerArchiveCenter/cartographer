@@ -1,0 +1,16 @@
+<div class="form-group {% if field.errors %}has-error{% endif %}">
+  {% if field.label != "Delete" %}
+  <label for="{{field.id_for_label}}">{{field.label}}{% if field.field.required %} *{% endif %}</label>
+  {{ field }}
+  {% endif %}
+  {% if field.help_text %}
+  <small id="{{field.id_for_label}}HelpBlock" class="form-text text-muted">{{field.help_text}}</small>
+  {% endif %}
+  {% if field.errors %}
+  <div class="invalid-feedback">
+  {% for error in field.errors %}
+    {{error}}
+  {% endfor %}
+  </div>
+  {% endif %}
+</div>

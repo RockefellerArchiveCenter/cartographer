@@ -1,7 +1,8 @@
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, CreateView, DeleteView, DetailView, ListView
+from django.views.generic import TemplateView, CreateView, DeleteView, DetailView, ListView, UpdateView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from .forms import ArrangementMapForm
 from .models import ArrangementMap
 from .serializers import ArrangementMapSerializer, ArrangementMapListSerializer
 
@@ -31,7 +32,15 @@ class MapsListView(ListView):
 
 class MapsNewView(CreateView):
     model = ArrangementMap
-    fields = ('title',)
+    form_class = ArrangementMapForm
+
+    def get_success_url(self):
+        return reverse('app:map-detail', kwargs={'pk': self.object.pk})
+
+
+class MapsUpdateView(UpdateView):
+    model = ArrangementMap
+    form_class = ArrangementMapForm
 
     def get_success_url(self):
         return reverse('app:map-detail', kwargs={'pk': self.object.pk})

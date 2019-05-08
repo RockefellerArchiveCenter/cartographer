@@ -1,6 +1,6 @@
 {% extends "maps/base.html" %}
 
-{% block title %}Create New Map{% endblock %}
+{% block title %}{% if object.pk %}Edit {{object.title}} Map{% else %}Create New Map{% endif %}{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -13,7 +13,10 @@
 				{{ hidden }}
 			{% endfor %}
 
-      {{form.as_p}}
+
+			{% for field in form.visible_fields %}
+				{% include 'maps/form_fields.html' %}
+			{% endfor %}
 
   		<div class="row mar-top20">
   			<div class="col-md-12">

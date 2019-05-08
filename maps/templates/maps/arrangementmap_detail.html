@@ -2,7 +2,10 @@
 
 {% block title %}
   {{object.title}}
-  <a href="{% url 'app:map-delete' object.pk %}" class="btn btn-danger float-right">Delete</a>
+  <div class="buttons float-right">
+    <a href="{% url 'app:map-update' object.pk %}" class="btn btn-warning">Edit</a>
+    <a href="{% url 'app:map-delete' object.pk %}" class="btn btn-danger">Delete</a>
+  </div>
 {% endblock %}
 
 {% block content %}
