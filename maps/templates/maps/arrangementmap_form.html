@@ -1,0 +1,28 @@
+{% extends "maps/base.html" %}
+
+{% block title %}Create New Map{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col">
+		<form action="" method="post">
+			{% csrf_token %}
+			{{form.management_form}}
+			{{form.non_form_errors}}
+			{% for hidden in form.hidden_fields %}
+				{{ hidden }}
+			{% endfor %}
+
+      {{form.as_p}}
+
+  		<div class="row mar-top20">
+  			<div class="col-md-12">
+  				<button type="submit" class="btn btn-primary">Submit</button>
+  				<a href="{% url 'app:map-list' %}" class="btn btn-danger">Cancel</a>
+  			</div>
+  		</div>
+
+  	</form>
+  </div>
+</div>
+{% endblock %}

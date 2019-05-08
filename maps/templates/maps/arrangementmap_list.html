@@ -1,0 +1,17 @@
+{% extends "maps/base.html" %}
+
+{% block title %}Maps <a class="btn btn-lg btn-primary float-right" href="{% url 'app:map-new' %}">Create new map</a>{% endblock %}
+
+{% block content %}
+<table class="table">
+{% for map in object_list %}
+<tr>
+  <td><a href="{% url 'app:map-detail' map.pk %}">{{map.title}}</a></td>
+  <td>Created {{map.created}}</td>
+  <td>Modified {{map.modified}}</td>
+</tr>
+{% empty %}
+  <tr><td>No arrangement maps.</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

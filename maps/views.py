@@ -1,8 +1,35 @@
-from django.shortcuts import render
+from django.urls import reverse
+from django.views.generic import TemplateView, CreateView, ListView, DetailView
 from rest_framework.viewsets import ModelViewSet
 
 from .models import ArrangementMap
 from .serializers import ArrangementMapSerializer, ArrangementMapListSerializer
+
+
+class HomeView(TemplateView):
+    template_name = 'maps/homeview.html'
+
+    def get_context_data(self):
+        context = super(HomeView, self).get_context_data()
+        context['recent_maps'] = ArrangementMap.objects.all().order_by('-modified')
+        return context
+
+
+class MapsDetailView(DetailView):
+    model = ArrangementMap
+
+
+class MapsListView(ListView):
+    model = ArrangementMap
+    queryset = ArrangementMap.objects.all().order_by('-modified')
+
+
+class MapsNewView(CreateView):
+    model = ArrangementMap
+    fields = ('title',)
+
+    def get_success_url(self):
+        return reverse('app:map-detail', kwargs={'pk': self.object.pk})
 
 
 class ArrangementMapViewset(ModelViewSet):

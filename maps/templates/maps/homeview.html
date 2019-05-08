@@ -1,0 +1,24 @@
+{% extends "maps/base.html" %}
+
+{% block title %}Recent Maps <a class="btn btn-lg btn-primary float-right" href="{% url 'app:map-new' %}">Create new map</a>{% endblock %}
+
+{% block content %}
+<div class="row">
+{% for map in recent_maps %}
+<div class="col-6">
+  <div class="card mb-4">
+    <div class="card-body">
+      <h3><a href="{% url 'app:map-detail' map.pk %}">{{map.title}}</a></h3>
+    </div>
+    <div class="card-footer">
+      <p class="float-left text-muted">Created {{map.created}}</p>
+      <p class="float-right text-muted">Modified {{map.modified}}</p>
+    </div>
+  </div>
+</div>
+{% empty %}
+  <div class="col-12"><p>No arrangement maps.</p></div>
+{% endfor %}
+</div>
+<a class="btn btn-primary" href="{% url 'app:map-list' %}">View all maps</a>
+{% endblock %}
