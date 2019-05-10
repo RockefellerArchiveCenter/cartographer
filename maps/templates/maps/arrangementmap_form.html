@@ -19,8 +19,8 @@
 			{% endfor %}
 
 			{% if object.pk and not object.components.all %}
-			<button type="button" class="btn btn-primary create-component" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}">
-			  Add Top-Level Child
+			<button type="button" class="btn btn-sm btn-outline-primary create-component" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}">
+			  add child
 			</button>
 			{% endif %}
 
@@ -33,8 +33,10 @@
 								<p class="mb-0">{{ node.title }}</p>
 							</div>
 							<div class="buttons col">
-								<button class="btn btn-sm btn-secondary create-component" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.parent.pk}}">add sibling</button>
-								<button class="btn btn-sm btn-secondary create-component" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.pk}}">add child</button>
+								<div class="btn-group btn-group-sm" role="group" aria-label="Add additional components">
+									<button class="btn btn-outline-primary create-component" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.parent.pk}}">add sibling</button>
+									<button class="btn btn-outline-primary create-component" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.pk}}">add child</button>
+								</div>
 								<button class="btn btn-sm btn-danger delete-component" data-toggle="modal" data-target="#component_delete_modal" data-object="{{node.pk}}">delete</button>
 							</div>
 						</div>
@@ -48,8 +50,8 @@
 			</div>
 			{% endif %}
 
-  		<div class="row mar-top20">
-  			<div class="col-md-12">
+  		<div class="row mt-4">
+  			<div class="col-12">
   				<button type="submit" class="btn btn-primary">Submit</button>
   				<a href="{% url 'app:map-list' %}" class="btn btn-danger">Cancel</a>
   			</div>
