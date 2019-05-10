@@ -41,7 +41,7 @@ class ArrangementMapSerializer(serializers.HyperlinkedModelSerializer):
             return self.tree
 
     def ref(self, obj):
-        return reverse('arrangementmapcomponent-detail', kwargs={'pk': obj.pk})
+        return obj.archivesspace_uri if obj.archivesspace_uri else reverse('arrangementmapcomponent-detail', kwargs={'pk': obj.pk})
 
 
 class ArrangementMapListSerializer(serializers.HyperlinkedModelSerializer):

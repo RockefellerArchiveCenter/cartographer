@@ -5,6 +5,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from asnake.aspace import ASpace
+
+from cartographer import settings
 from .forms import ArrangementMapForm, ArrangementMapComponentForm
 from .models import ArrangementMap, ArrangementMapComponent
 from .serializers import ArrangementMapSerializer, ArrangementMapListSerializer
@@ -90,6 +93,16 @@ class ComponentsAJAXView(APIView):
                     object.archivesspace_uri = request.GET.get('archivesspace_uri')
                     object.save()
                     message = "Component updated."
+                elif action == 'get_resource':
+                    message = {}
+                    message['success'] = False
+                    repo = ASpace(baseurl=settings.ASPACE['baseurl'],
+                                  user=settings.ASPACE['username'],
+                                  password=settings.ASPACE['password']).repositories(settings.ASPACE['repo_id'])
+                    resource = repo.resources(request.GET.get('resource_id'))
+                    message['title'] = resource.title
+                    message['uri'] = resource.uri
+                    message['success'] = True
                 return Response({"detail": message}, status=200)
             except Exception as e:
                 return Response({"detail": str(e)}, status=500)

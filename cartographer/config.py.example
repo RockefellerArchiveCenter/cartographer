@@ -7,3 +7,11 @@ DATABASES = {
         'PORT': 5432,
     }
 }
+
+# ArchivesSpace configs
+ASPACE = {
+  "baseurl": "http://sandbox.archivesspace.org:8089/",
+  "username": "admin",
+  "password": "admin",
+  "repo_id": 2,
+}
