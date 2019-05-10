@@ -70,41 +70,27 @@ class MapsPublishView(APIView):
 
 
 class ComponentsAJAXView(APIView):
-    def post(self, request, format=None):
+    def get(self, request, format=None, **kwargs):
         if request.is_ajax():
             try:
-                form_data = QueryDict(request.body)
-                ArrangementMapComponent.objects.create(
-                    title=form_data.get('title'),
-                    archivesspace_uri=form_data.get('archivesspace_uri'),
-                    parent=ArrangementMapComponent.objects.get(pk=form_data.get('parent')) if form_data.get('parent') else None,
-                    map=ArrangementMap.objects.get(pk=form_data.get('map')))
-                return Response({"detail": "Component created."}, status=200)
-            except Exception as e:
-                return Response({"detail": str(e)}, status=500)
-        else:
-            return Response({"detail": "Request must be AJAX"}, status=500)
-
-    def delete(self, request, format=None):
-        if request.is_ajax():
-            try:
-                form_data = QueryDict(request.body)
-                ArrangementMapComponent.objects.get(pk=form_data.get('object')).delete()
-                return Response({"detail": "Component deleted."}, status=200)
-            except Exception as e:
-                return Response({"detail": str(e)}, status=500)
-        else:
-            return Response({"detail": "Request must be AJAX"}, status=500)
-
-    def put(self, request, format=None):
-        if request.is_ajax():
-            try:
-                form_data = QueryDict(request.body)
-                object = ArrangementMapComponent.objects.get(pk=form_data.get('object'))
-                object.title = form_data.get('title')
-                object.archivesspace_uri = form_data.get('archivesspace_uri')
-                object.save()
-                return Response({"detail": "Component updated."}, status=200)
+                action = request.GET.get('action')
+                if action == 'create':
+                    ArrangementMapComponent.objects.create(
+                        title=request.GET.get('title'),
+                        archivesspace_uri=request.GET.get('archivesspace_uri'),
+                        parent=ArrangementMapComponent.objects.get(pk=request.GET.get('parent')) if request.GET.get('parent') else None,
+                        map=ArrangementMap.objects.get(pk=request.GET.get('map')))
+                    message = "Component created."
+                elif action == 'delete':
+                    ArrangementMapComponent.objects.get(pk=request.GET.get('object')).delete()
+                    message = "Component deleted."
+                elif action == 'update':
+                    object = ArrangementMapComponent.objects.get(pk=request.GET.get('object'))
+                    object.title = request.GET.get('title')
+                    object.archivesspace_uri = request.GET.get('archivesspace_uri')
+                    object.save()
+                    message = "Component updated."
+                return Response({"detail": message}, status=200)
             except Exception as e:
                 return Response({"detail": str(e)}, status=500)
         else:
@@ -114,10 +100,10 @@ class ComponentsAJAXView(APIView):
 class ArrangementMapViewset(ReadOnlyModelViewSet):
     """
     retrieve:
-    Return data about a Collection, identified by a primary key.
+    Return data about an Arrangement Map, identified by a primary key.
 
     list:
-    Return paginated data about all Collections.
+    Return paginated data about all Arrangement Maps.
     """
     model = ArrangementMap
     queryset = ArrangementMap.objects.all().order_by('-modified')
@@ -126,3 +112,20 @@ class ArrangementMapViewset(ReadOnlyModelViewSet):
         if self.action == 'list':
             return ArrangementMapListSerializer
         return ArrangementMapSerializer
+
+
+class ArrangementMapComponentViewset(ReadOnlyModelViewSet):
+    """
+    retrieve:
+    Return data about an Arrangement Map Component, identified by a primary key.
+
+    list:
+    Return paginated data about all Arrangement Map Components.
+    """
+    model = ArrangementMap
+    queryset = ArrangementMap.objects.all().order_by('-modified')
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ArrangementMapComponentListSerializer
+        return ArrangementMapComponentSerializer

@@ -9,8 +9,9 @@
       </div>
       <div class="modal-body">
         <p>Are you sure you want to delete this component?
-        <form action="{% url 'app:component-ajax' %}" method="delete">
+        <form action="{% url 'app:component-ajax' %}" method="get">
           <input type="hidden" name="object">
+          <input type="hidden" name="action" value="delete">
       	</form>
       </div>
       <div class="modal-footer">
