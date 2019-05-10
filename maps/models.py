@@ -4,6 +4,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 class ArrangementMap(models.Model):
     title = models.CharField(max_length=255)
+    publish = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 

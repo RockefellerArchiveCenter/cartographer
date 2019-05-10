@@ -2,8 +2,13 @@
 {% load mptt_tags %}
 
 {% block title %}
-  {{object.title}}
+  {{object.title}} <small><span class="badge {% if object.publish %}badge-success{% else %}badge-secondary{% endif %}">{% if object.publish %}Published{% else %}Unpublished{% endif %}</span></small>
   <div class="buttons float-right">
+    {% if object.publish %}
+    <button data-url="{% url 'app:map-publish' object.pk %}?action=unpublish" class="btn btn-secondary publish">Unpublish</button>
+    {% else %}
+    <button data-url="{% url 'app:map-publish' object.pk %}?action=publish" class="btn btn-primary publish">Publish</button>
+    {% endif %}
     <a href="{% url 'app:map-update' object.pk %}" class="btn btn-warning">Edit</a>
     <a href="{% url 'app:map-delete' object.pk %}" class="btn btn-danger">Delete</a>
   </div>

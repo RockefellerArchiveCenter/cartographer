@@ -45,13 +45,28 @@ class MapsUpdateView(UpdateView):
     model = ArrangementMap
     form_class = ArrangementMapForm
 
-    def get_context_data(self):
-        context = super(MapsUpdateView, self).get_context_data()
-        context['component_form'] = ArrangementMapComponentForm
-        return context
-
     def get_success_url(self):
         return reverse('app:map-detail', kwargs={'pk': self.object.pk})
+
+
+class MapsPublishView(APIView):
+    def get(self, request, format=None, **kwargs):
+        if request.is_ajax():
+            try:
+                action = request.GET.get('action')
+                object = ArrangementMap.objects.get(pk=self.kwargs.get('pk'))
+                if action == 'publish':
+                    print("publish")
+                    object.publish = True
+                else:
+                    print("unpublish")
+                    object.publish = False
+                object.save()
+                return Response({"detail": "Component {}ed.".format(action)}, status=200)
+            except Exception as e:
+                return Response({"detail": str(e)}, status=500)
+        else:
+            return Response({"detail": "Request must be AJAX"}, status=500)
 
 
 class ComponentsAJAXView(APIView):
@@ -64,7 +79,7 @@ class ComponentsAJAXView(APIView):
                     archivesspace_uri=form_data.get('archivesspace_uri'),
                     parent=ArrangementMapComponent.objects.get(pk=form_data.get('parent')) if form_data.get('parent') else None,
                     map=ArrangementMap.objects.get(pk=form_data.get('map')))
-                return Response({"detail": "Component saved."}, status=200)
+                return Response({"detail": "Component created."}, status=200)
             except Exception as e:
                 return Response({"detail": str(e)}, status=500)
         else:
@@ -75,7 +90,7 @@ class ComponentsAJAXView(APIView):
             try:
                 form_data = QueryDict(request.body)
                 ArrangementMapComponent.objects.get(pk=form_data.get('object')).delete()
-                return Response({"detail": "Component saved."}, status=200)
+                return Response({"detail": "Component deleted."}, status=200)
             except Exception as e:
                 return Response({"detail": str(e)}, status=500)
         else:
@@ -89,12 +104,11 @@ class ComponentsAJAXView(APIView):
                 object.title = form_data.get('title')
                 object.archivesspace_uri = form_data.get('archivesspace_uri')
                 object.save()
-                return Response({"detail": "Component saved."}, status=200)
+                return Response({"detail": "Component updated."}, status=200)
             except Exception as e:
                 return Response({"detail": str(e)}, status=500)
         else:
             return Response({"detail": "Request must be AJAX"}, status=500)
-
 
 
 class ArrangementMapViewset(ReadOnlyModelViewSet):

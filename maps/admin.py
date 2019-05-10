@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import ArrangementMap
 
-# Register your models here.
+
+@admin.register(ArrangementMap)
+class ArrangementMapAdmin(admin.ModelAdmin):
+    pass

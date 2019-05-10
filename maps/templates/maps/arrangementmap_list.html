@@ -10,6 +10,11 @@
   <td>Created {{map.created}}</td>
   <td>Modified {{map.modified}}</td>
   <td>
+    {% if map.publish %}
+    <button data-url="{% url 'app:map-publish' map.pk %}?action=unpublish" class="btn btn-secondary publish">Unpublish</button>
+    {% else %}
+    <button data-url="{% url 'app:map-publish' map.pk %}?action=publish" class="btn btn-primary publish">Publish</button>
+    {% endif %}
     <a href="{% url 'app:map-update' map.pk %}" class="btn btn-warning">Edit</a>
     <a href="{% url 'app:map-delete' map.pk %}" class="btn btn-danger">Delete</a>
   </td>
