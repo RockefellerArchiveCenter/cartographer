@@ -19,7 +19,7 @@
 			{% endfor %}
 
 			{% if object.pk and not object.components.all %}
-			<button type="button" class="btn btn-primary create-component" data-toggle="modal" data-target="#component_modal" data-map="{{object.pk}}" data-form="{% url 'app:component-new' %}">
+			<button type="button" class="btn btn-primary create-component" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}">
 			  Add Top-Level Child
 			</button>
 			{% endif %}
@@ -33,8 +33,9 @@
 								<p class="mb-0">{{ node.title }}</p>
 							</div>
 							<div class="buttons col">
-								<button class="btn btn-sm btn-secondary create-component" data-toggle="modal" data-target="#component_modal" data-map="{{object.pk}}" data-parent="{{node.pk}}" data-form="{% url 'app:component-new' %}">add child</button>
-								<button class="btn btn-sm btn-secondary create-component" data-toggle="modal" data-target="#component_modal" data-map="{{object.pk}}" data-parent="{{node.parent.pk}}" data-form="{% url 'app:component-new' %}">add sibling</button>
+								<button class="btn btn-sm btn-secondary create-component" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.parent.pk}}">add sibling</button>
+								<button class="btn btn-sm btn-secondary create-component" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.pk}}">add child</button>
+								<button class="btn btn-sm btn-danger delete-component" data-toggle="modal" data-target="#component_delete_modal" data-object="{{node.pk}}">delete</button>
 							</div>
 						</div>
 							{% if not node.is_leaf_node %}
@@ -58,7 +59,8 @@
   </div>
 </div>
 
-{% include "maps/component_modal.html" %}
+{% include "maps/component_create_modal.html" %}
+{% include "maps/component_delete_modal.html" %}
 
 {% endblock %}
 
@@ -66,33 +68,54 @@
 <script type="text/javascript">
 	$('.create-component').on('click', function(e){
 		e.preventDefault();
-		$('#component_modal input[name=parent]').val($(this).data('parent'))
-		$('#component_modal input[name=map]').val($(this).data('map'))
+		$('#component_create_modal input[name=parent]').val($(this).data('parent'))
+		$('#component_create_modal input[name=map]').val($(this).data('map'))
 	})
 
-	$('#component_modal button.save').on('click', function(){
-		var title = $('#component_modal input[name=title]').val()
-		var uri = $('#component_modal input[name=archivesspace_uri]').val()
-		var parent = $('#component_modal input[name=parent]').val()
-		var map = $('#component_modal input[name=map]').val()
+	$('.delete-component').on('click', function(e){
+		e.preventDefault();
+		$('#component_delete_modal input[name=object]').val($(this).data('object'))
+	})
+
+	$('#component_create_modal button.save').on('click', function(){
+		var form = $('#component_create_modal form')
+		var title = form.find('input[name=title]').val()
+		var uri = form.find('#component_create_modal input[name=archivesspace_uri]').val()
+		var parent = form.find('#component_create_modal input[name=parent]').val()
+		var map = form.find('#component_create_modal input[name=map]').val()
 		if (title || uri) {
 			$.ajax({
-				type: $('#component_modal form').attr('method'),
-				url: $('#component_modal form').attr('action'),
-				data: $('#component_modal form').serialize(),
-				context: $('#component_modal form'),
+				type: form.attr('method'),
+				url: form.attr('action'),
+				data: form.serialize(),
+				context: form,
 				success: function(data, status) {
-					$('#component_modal').modal('hide');
+					$('#component_create_modal').modal('hide');
 					location.reload();
 				}
 			})
 		} else {
-			$('#component_modal input[type=text]').each(function(){
+			form.find('input[type=text]').each(function(){
 				$(this).addClass('is-invalid')
 			})
-			$('#component_modal .modal-body').prepend('<div class="alert alert-danger">You must enter either a title or an ArchivesSpace URI.</div>')
+			form.prepend('<div class="alert alert-danger">You must enter either a title or an ArchivesSpace URI.</div>')
 			return false
 		}
 	});
+
+	$('#component_delete_modal button.save').on('click', function(){
+		var form = $('#component_delete_modal form')
+		$.ajax({
+			type: form.attr('method'),
+			url: form.attr('action'),
+			data: form.serialize(),
+			context: form,
+			success: function(data, status) {
+				$('#component_delete_modal').modal('hide');
+				location.reload();
+			}
+		})
+	});
+
 </script>
 {% endblock %}

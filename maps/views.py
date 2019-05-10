@@ -71,6 +71,19 @@ class ComponentsNewView(APIView):
             return Response({"detail": "Request must be AJAX"}, status=500)
 
 
+class ComponentsDeleteView(APIView):
+    def post(self, request, format=None):
+        if request.is_ajax():
+            try:
+                form_data = QueryDict(request.body)
+                ArrangementMapComponent.objects.get(pk=form_data.get('object')).delete()
+                return Response({"detail": "Component saved."}, status=200)
+            except Exception as e:
+                return Response({"detail": str(e)}, status=500)
+        else:
+            return Response({"detail": "Request must be AJAX"}, status=500)
+
+
 class ArrangementMapViewset(ReadOnlyModelViewSet):
     """
     retrieve:

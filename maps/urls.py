@@ -8,6 +8,7 @@ urlpatterns = [
     re_path('maps/(?P<pk>\d+)/delete/', MapsDeleteView.as_view(), name='map-delete'),
     re_path('maps/(?P<pk>\d+)/update/', MapsUpdateView.as_view(), name='map-update'),
     path('new', MapsNewView.as_view(), name='map-new'),
-    path('components/new', ComponentsNewView.as_view(), name='component-new'),
+    path('components/new/', ComponentsNewView.as_view(), name='component-new'),
+    path('components/delete/', ComponentsDeleteView.as_view(), name='component-delete'),
     path('', HomeView.as_view(), name='map-home'),
 ]
