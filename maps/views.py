@@ -54,7 +54,7 @@ class MapsUpdateView(UpdateView):
         return reverse('app:map-detail', kwargs={'pk': self.object.pk})
 
 
-class ComponentsNewView(APIView):
+class ComponentsAJAXView(APIView):
     def post(self, request, format=None):
         if request.is_ajax():
             try:
@@ -70,9 +70,7 @@ class ComponentsNewView(APIView):
         else:
             return Response({"detail": "Request must be AJAX"}, status=500)
 
-
-class ComponentsDeleteView(APIView):
-    def post(self, request, format=None):
+    def delete(self, request, format=None):
         if request.is_ajax():
             try:
                 form_data = QueryDict(request.body)
@@ -82,6 +80,21 @@ class ComponentsDeleteView(APIView):
                 return Response({"detail": str(e)}, status=500)
         else:
             return Response({"detail": "Request must be AJAX"}, status=500)
+
+    def put(self, request, format=None):
+        if request.is_ajax():
+            try:
+                form_data = QueryDict(request.body)
+                object = ArrangementMapComponent.objects.get(pk=form_data.get('object'))
+                object.title = form_data.get('title')
+                object.archivesspace_uri = form_data.get('archivesspace_uri')
+                object.save()
+                return Response({"detail": "Component saved."}, status=200)
+            except Exception as e:
+                return Response({"detail": str(e)}, status=500)
+        else:
+            return Response({"detail": "Request must be AJAX"}, status=500)
+
 
 
 class ArrangementMapViewset(ReadOnlyModelViewSet):

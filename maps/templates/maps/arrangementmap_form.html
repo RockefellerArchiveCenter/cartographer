@@ -37,6 +37,7 @@
 									<button class="btn btn-outline-primary create-component" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.parent.pk}}">add sibling</button>
 									<button class="btn btn-outline-primary create-component" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.pk}}">add child</button>
 								</div>
+								<button class="btn btn-sm btn-warning edit-component" data-toggle="modal" data-target="#component_edit_modal" data-title="{{node.title}}" data-archivesspace_uri="{{node.archivesspace_uri}}" data-object="{{node.pk}}">edit</button>
 								<button class="btn btn-sm btn-danger delete-component" data-toggle="modal" data-target="#component_delete_modal" data-object="{{node.pk}}">delete</button>
 							</div>
 						</div>
@@ -62,6 +63,7 @@
 </div>
 
 {% include "maps/component_create_modal.html" %}
+{% include "maps/component_edit_modal.html" %}
 {% include "maps/component_delete_modal.html" %}
 
 {% endblock %}
@@ -74,6 +76,13 @@
 		$('#component_create_modal input[name=map]').val($(this).data('map'))
 	})
 
+	$('.edit-component').on('click', function(e){
+		e.preventDefault();
+		$('#component_edit_modal input[name=object]').val($(this).data('object'))
+		$('#component_edit_modal input[name=title]').val($(this).data('title'))
+		$('#component_edit_modal input[name=archivesspace_uri]').val($(this).data('archivesspace_uri'))
+	})
+
 	$('.delete-component').on('click', function(e){
 		e.preventDefault();
 		$('#component_delete_modal input[name=object]').val($(this).data('object'))
@@ -81,11 +90,7 @@
 
 	$('#component_create_modal button.save').on('click', function(){
 		var form = $('#component_create_modal form')
-		var title = form.find('input[name=title]').val()
-		var uri = form.find('#component_create_modal input[name=archivesspace_uri]').val()
-		var parent = form.find('#component_create_modal input[name=parent]').val()
-		var map = form.find('#component_create_modal input[name=map]').val()
-		if (title || uri) {
+		if (form.find('input[name=title]').val() || form.find('input[name=archivesspace_uri]').val()) {
 			$.ajax({
 				type: form.attr('method'),
 				url: form.attr('action'),
@@ -93,6 +98,28 @@
 				context: form,
 				success: function(data, status) {
 					$('#component_create_modal').modal('hide');
+					location.reload();
+				}
+			})
+		} else {
+			form.find('input[type=text]').each(function(){
+				$(this).addClass('is-invalid')
+			})
+			form.prepend('<div class="alert alert-danger">You must enter either a title or an ArchivesSpace URI.</div>')
+			return false
+		}
+	});
+
+	$('#component_edit_modal button.save').on('click', function(){
+		var form = $('#component_edit_modal form')
+		if (form.find('input[name=title]').val() || form.find('input[name=archivesspace_uri]').val()) {
+			$.ajax({
+				type: form.attr('method'),
+				url: form.attr('action'),
+				data: form.serialize(),
+				context: form,
+				success: function(data, status) {
+					$('#component_edit_modal').modal('hide');
 					location.reload();
 				}
 			})
