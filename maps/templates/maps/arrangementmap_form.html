@@ -1,10 +1,11 @@
 {% extends "maps/base.html" %}
+{% load mptt_tags %}
 
 {% block title %}{% if object.pk %}Edit {{object.title}} Map{% else %}Create New Map{% endif %}{% endblock %}
 
 {% block content %}
 <div class="row">
-	<div class="col">
+	<div class="col-12">
 		<form action="" method="post">
 			{% csrf_token %}
 			{{form.management_form}}
@@ -13,10 +14,38 @@
 				{{ hidden }}
 			{% endfor %}
 
-
 			{% for field in form.visible_fields %}
 				{% include 'maps/form_fields.html' %}
 			{% endfor %}
+
+			{% if object.pk and not object.components.all %}
+			<button type="button" class="btn btn-primary create-component" data-toggle="modal" data-target="#component_modal" data-map="{{object.pk}}" data-form="{% url 'app:component-new' %}">
+			  Add Top-Level Child
+			</button>
+			{% endif %}
+
+			{% if object.components.all %}
+			<div class="row">
+				{% recursetree object.components.all %}
+					<div class="col-12 border-top">
+						<div class="m-1 row">
+							<div class="title col">
+								<p class="mb-0">{{ node.title }}</p>
+							</div>
+							<div class="buttons col">
+								<button class="btn btn-sm btn-secondary create-component" data-toggle="modal" data-target="#component_modal" data-map="{{object.pk}}" data-parent="{{node.pk}}" data-form="{% url 'app:component-new' %}">add child</button>
+								<button class="btn btn-sm btn-secondary create-component" data-toggle="modal" data-target="#component_modal" data-map="{{object.pk}}" data-parent="{{node.parent.pk}}" data-form="{% url 'app:component-new' %}">add sibling</button>
+							</div>
+						</div>
+							{% if not node.is_leaf_node %}
+									<div class="children">
+										{{ children }}
+				          </div>
+			        {% endif %}
+			     </div>
+			   {% endrecursetree %}
+			</div>
+			{% endif %}
 
   		<div class="row mar-top20">
   			<div class="col-md-12">
@@ -28,4 +57,42 @@
   	</form>
   </div>
 </div>
+
+{% include "maps/component_modal.html" %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript">
+	$('.create-component').on('click', function(e){
+		e.preventDefault();
+		$('#component_modal input[name=parent]').val($(this).data('parent'))
+		$('#component_modal input[name=map]').val($(this).data('map'))
+	})
+
+	$('#component_modal button.save').on('click', function(){
+		var title = $('#component_modal input[name=title]').val()
+		var uri = $('#component_modal input[name=archivesspace_uri]').val()
+		var parent = $('#component_modal input[name=parent]').val()
+		var map = $('#component_modal input[name=map]').val()
+		if (title || uri) {
+			$.ajax({
+				type: $('#component_modal form').attr('method'),
+				url: $('#component_modal form').attr('action'),
+				data: $('#component_modal form').serialize(),
+				context: $('#component_modal form'),
+				success: function(data, status) {
+					$('#component_modal').modal('hide');
+					location.reload();
+				}
+			})
+		} else {
+			$('#component_modal input[type=text]').each(function(){
+				$(this).addClass('is-invalid')
+			})
+			$('#component_modal .modal-body').prepend('<div class="alert alert-danger">You must enter either a title or an ArchivesSpace URI.</div>')
+			return false
+		}
+	});
+</script>
 {% endblock %}
