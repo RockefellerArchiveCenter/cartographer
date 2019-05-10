@@ -6,7 +6,7 @@
 <table class="table">
 {% for map in recent_maps %}
 <tr>
-  <td><a href="{% url 'app:map-detail' map.pk %}">{{map.title}}</a></td>
+  <td><a href="{% url 'app:map-detail' map.pk %}">{{map.title}}</a> {% if map.publish %}<span class="badge badge-success">published</span>{% endif %}</td>
   <td>Created {{map.created}}</td>
   <td>Modified {{map.modified}}</td>
 </tr>

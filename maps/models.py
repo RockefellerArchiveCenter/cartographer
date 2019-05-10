@@ -1,14 +1,18 @@
 from django.db import models
+from mptt.models import MPTTModel, TreeForeignKey
 
 
 class ArrangementMap(models.Model):
     title = models.CharField(max_length=255)
+    publish = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
 
-class ArrangementMapComponent(models.Model):
+class ArrangementMapComponent(MPTTModel):
     title = models.CharField(max_length=255, null=True, blank=True)
     archivesspace_uri = models.CharField(max_length=255, null=True, blank=True)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    map = models.ForeignKey(ArrangementMap, on_delete=models.CASCADE, related_name='components')
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)

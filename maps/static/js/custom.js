@@ -1,8 +1,10 @@
-$(document).on('click', '.collapse-icon', function(){
-  var target = $(this).attr('href')
+$('button.publish').on('click', function(e) {
+  e.preventDefault();
   $.ajax({
-      url: $(target).data('src')})
-    .done(function(data) {
-      $(target).append(data)
-    });
+    method: "GET",
+    url: $(this).data('url'),
+    success: function(data, status) {
+      location.reload();
+    }
+  })
 });

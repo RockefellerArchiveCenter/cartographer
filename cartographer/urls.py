@@ -3,10 +3,11 @@ from django.urls import path, re_path, include
 from rest_framework import routers
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from maps.views import ArrangementMapViewset
+from maps.views import ArrangementMapViewset, ArrangementMapComponentViewset
 
 router = routers.DefaultRouter()
-router.register(r'maps', ArrangementMapViewset, 'map')
+router.register(r'maps', ArrangementMapViewset, 'arrangementmap')
+router.register(r'maps', ArrangementMapComponentViewset, 'arrangementmapcomponent')
 schema_view = get_schema_view(
    openapi.Info(
       title="Cartographer API",
