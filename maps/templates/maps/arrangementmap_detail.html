@@ -15,18 +15,22 @@
 {% endblock %}
 
 {% block content %}
-<ul>
+<div class="row">
   {% recursetree object.components.all %}
-    <li>
-      {{ node.title }}
+    <div class="col-12 border-top">
+      <div class="m-1 row">
+        <div class="title">
+          <p class="mb-0">{{ node.title }}{% if node.archivesspace_uri %} <span class="badge badge-secondary">AS</span>{% endif %}</p>
+        </div>
+      </div>
         {% if not node.is_leaf_node %}
-          <ul>
-            {{ children }}
-          </ul>
+            <div class="children">
+              {{ children }}
+            </div>
         {% endif %}
-     </li>
+     </div>
    {% endrecursetree %}
-</ul>
+</div>
 <p class="text-muted">created {{object.created}}</p>
 <p class="text-muted">last modified {{object.modified}}</p>
 {% endblock %}

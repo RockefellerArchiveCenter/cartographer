@@ -30,7 +30,7 @@
 					<div class="col-12 border-top">
 						<div class="m-1 row">
 							<div class="title col">
-								<p class="mb-0">{{ node.title }}</p>
+								<p class="mb-0">{{ node.title }}{% if node.archivesspace_uri %} <span class="badge badge-secondary">AS</span>{% endif %}</p>
 							</div>
 							<div class="buttons col">
 								<div class="btn-group btn-group-sm" role="group" aria-label="Add additional components">
@@ -122,28 +122,23 @@
 		}
 	});
 
-  $('#resource_find').on('click', function(e){
+  $('.resource_find').on('click', function(e){
     e.preventDefault();
-		form = $(this).closest('.modal-body')
-		if (this.data('action') == 'search') {
-	    form.find('input[name=archivesspace_uri]').fadeTo(200, 0.5);
-			// make sure there's a value in the field
-	    $.get("{% url 'app:component-ajax' %}?action=get_resource", {'resource_id': $('input[name=archivesspace_uri]').val()}, function(resp){
-	      if (resp.detail.success){
-					form.find('input[name=archivesspace_uri]').fadeTo(0, 1).show()
-					form.find('input[name=archivesspace_uri]').val(resp.detail.uri).prop('disabled', true)
-	        form.find('input[name=title]').val(resp.detail.title).prop('disabled', true)
-					$(this).text('Clear Search Results')
-	      } else {
-	        form.find('input[name=archivesspace_uri]').fadeTo(0, 1).show()
-					// show message can't find it
-	      }
-	    })
-		} else {
-			form.find('input[name=archivesspace_uri]').val('').prop('disabled', false)
-			form.find('input[name=title]').val('').prop('disabled', false)
-			$(this).text('Find in ArchivesSpace')
-		}
+		var form = $(this).closest('.modal').find('form')
+		var button = $(this)
+    form.find('input[name=archivesspace_uri]').fadeTo(200, 0.5);
+		// make sure there's a value in the field
+    $.get("{% url 'app:component-ajax' %}?action=get_resource", {'resource_id': form.find('input[name=archivesspace_uri]').val()}, function(resp, status){
+      if (resp.detail.success){
+				form.find('input[name=archivesspace_uri]').fadeTo(0, 1).show()
+				form.find('input[name=archivesspace_uri]').val(resp.detail.uri).prop('disabled', true)
+        form.find('input[name=title]').val(resp.detail.title).prop('disabled', true)
+      } else {
+        form.find('input[name=archivesspace_uri]').fadeTo(0, 1).show()
+				form.prepend('<div class="alert alert-danger">Could not find a resource matching that ID.</div>')
+				return false
+      }
+    })
   });
 </script>
 {% endblock %}

@@ -58,12 +58,7 @@ class MapsPublishView(APIView):
             try:
                 action = request.GET.get('action')
                 object = ArrangementMap.objects.get(pk=self.kwargs.get('pk'))
-                if action == 'publish':
-                    print("publish")
-                    object.publish = True
-                else:
-                    print("unpublish")
-                    object.publish = False
+                object.publish = True if action == 'publish' else False
                 object.save()
                 return Response({"detail": "Component {}ed.".format(action)}, status=200)
             except Exception as e:
@@ -100,6 +95,8 @@ class ComponentsAJAXView(APIView):
                                   user=settings.ASPACE['username'],
                                   password=settings.ASPACE['password']).repositories(settings.ASPACE['repo_id'])
                     resource = repo.resources(request.GET.get('resource_id'))
+                    if isinstance(resource, dict):
+                        return Response({"detail": resource.get('error')}, status=200)
                     message['title'] = resource.title
                     message['uri'] = resource.uri
                     message['success'] = True
