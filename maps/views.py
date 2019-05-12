@@ -94,6 +94,8 @@ class ComponentsAJAXView(APIView):
                     repo = ASpace(baseurl=settings.ASPACE['baseurl'],
                                   user=settings.ASPACE['username'],
                                   password=settings.ASPACE['password']).repositories(settings.ASPACE['repo_id'])
+                    if isinstance(repo, dict):
+                        return Response({"detail": repo.get('error')}, status=200)
                     resource = repo.resources(request.GET.get('resource_id'))
                     if isinstance(resource, dict):
                         return Response({"detail": resource.get('error')}, status=200)
