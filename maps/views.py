@@ -1,6 +1,7 @@
 from django.http import QueryDict
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, CreateView, DeleteView, DetailView, ListView, UpdateView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -9,8 +10,8 @@ from asnake.aspace import ASpace
 
 from cartographer import settings
 from .forms import ArrangementMapForm, ArrangementMapComponentForm
-from .models import ArrangementMap, ArrangementMapComponent
-from .serializers import ArrangementMapSerializer, ArrangementMapListSerializer
+from .models import ArrangementMap, ArrangementMapComponent, DeletedArrangementMap
+from .serializers import *
 
 
 class HomeView(TemplateView):
@@ -141,3 +142,13 @@ class ArrangementMapComponentViewset(ReadOnlyModelViewSet):
         if self.action == 'list':
             return ArrangementMapComponentListSerializer
         return ArrangementMapComponentSerializer
+
+
+class DeletedArrangementMapView(ListAPIView):
+    """
+    list:
+    Return paginated data about all Deleted Arrangement Maps.
+    """
+    model = DeletedArrangementMap
+    queryset = DeletedArrangementMap.objects.all().order_by('-deleted')
+    serializer_class = DeletedArrangementMapSerializer

@@ -1,6 +1,6 @@
 from django.urls import reverse
 from rest_framework import serializers
-from .models import ArrangementMap, ArrangementMapComponent
+from .models import ArrangementMap, ArrangementMapComponent, DeletedArrangementMap
 
 
 class ArrangementMapComponentSerializer(serializers.HyperlinkedModelSerializer):
@@ -48,3 +48,14 @@ class ArrangementMapListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ArrangementMap
         fields = ('url', 'title',)
+
+
+class DeletedArrangementMapSerializer(serializers.ModelSerializer):
+    ref = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DeletedArrangementMap
+        fields = ('ref', 'deleted')
+
+    def get_ref(self, obj):
+        return reverse('arrangementmap-detail', kwargs={'pk': obj.primary_key})

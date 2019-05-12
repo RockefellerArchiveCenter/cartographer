@@ -3,11 +3,11 @@ from django.urls import path, re_path, include
 from rest_framework import routers
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from maps.views import ArrangementMapViewset, ArrangementMapComponentViewset
+from maps.views import ArrangementMapViewset, ArrangementMapComponentViewset, DeletedArrangementMapView
 
 router = routers.DefaultRouter()
 router.register(r'maps', ArrangementMapViewset, 'arrangementmap')
-router.register(r'maps', ArrangementMapComponentViewset, 'arrangementmapcomponent')
+router.register(r'components', ArrangementMapComponentViewset, 'arrangementmapcomponent')
 schema_view = get_schema_view(
    openapi.Info(
       title="Cartographer API",
@@ -25,5 +25,6 @@ urlpatterns = [
     path('status/', include('health_check.api.urls')),
     re_path(r'^schema(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=None), name='schema-json'),
     path('api/', include(router.urls)),
+    path('api/delete-feed/', DeletedArrangementMapView.as_view(), name='delete-feed '),
     path('', include('maps.urls')),
 ]
