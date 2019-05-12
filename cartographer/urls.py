@@ -25,6 +25,6 @@ urlpatterns = [
     path('status/', include('health_check.api.urls')),
     re_path(r'^schema(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=None), name='schema-json'),
     path('api/', include(router.urls)),
-    path('api/delete-feed/', DeletedArrangementMapView.as_view(), name='delete-feed '),
+    path('api/delete-feed/', DeletedArrangementMapView.as_view(), name='delete-feed'),
     path('', include('maps.urls')),
 ]
