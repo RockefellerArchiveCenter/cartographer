@@ -97,6 +97,7 @@
 	// Saves component on save button click
 	$('.modal button.save').on('click', function(){
 		var form = $(this).closest('.modal').find('form')
+		form.find('#messages').empty()
 		form.find('input').each(function(){
 			$(this).prop('disabled', false)
 		})
