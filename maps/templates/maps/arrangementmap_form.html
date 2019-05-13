@@ -27,12 +27,12 @@
 			{% if object.components.all %}
 			<div class="row">
 				{% recursetree object.components.all %}
-					<div class="col-12 border-top">
-						<div class="m-1 row">
-							<div class="title col">
+					<div class="col-12 ml-3 border-top">
+						<div class="row m-1">
+							<div class="title col-8">
 								<p class="mb-0">{{ node.title }}{% if node.archivesspace_uri %} <span class="badge badge-secondary">AS</span>{% endif %}</p>
 							</div>
-							<div class="buttons col">
+							<div class="buttons col text-right">
 								<div class="btn-group btn-group-sm" role="group" aria-label="Add additional components">
 									<button class="btn btn-outline-primary component-action" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.parent.pk}}">add sibling</button>
 									<button class="btn btn-outline-primary component-action" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.pk}}">add child</button>
@@ -140,5 +140,9 @@
 			form.find('#messages').append('<div class="alert alert-danger">You must enter an ID to search for!</div>')
 		}
   });
+
+	$('.modal').on('shown.bs.modal', function () {
+    $('input[name=title]').focus();
+	})
 </script>
 {% endblock %}

@@ -15,6 +15,7 @@
 {% endblock %}
 
 {% block content %}
+<p class="text-muted">Created {{object.created}} <br/> Last modified {{object.modified}}</p>
 <div class="row">
   {% recursetree object.components.all %}
     <div class="col-12 border-top">
@@ -31,6 +32,4 @@
      </div>
    {% endrecursetree %}
 </div>
-<p class="text-muted">created {{object.created}}</p>
-<p class="text-muted">last modified {{object.modified}}</p>
 {% endblock %}
