@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./wait-for-it.sh db:5432 -- echo "Creating config file"
+./wait-for-it.sh cartographer-db:5432 -- echo "Creating config file"
 
 if [ ! -f manage.py ]; then
   cd cartographer

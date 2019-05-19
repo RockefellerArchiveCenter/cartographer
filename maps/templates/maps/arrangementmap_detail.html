@@ -5,23 +5,39 @@
   {{object.title}} <small><span class="badge {% if object.publish %}badge-success{% else %}badge-secondary{% endif %}">{% if object.publish %}Published{% else %}Unpublished{% endif %}</span></small>
   <div class="buttons float-right">
     {% if object.publish %}
-    <button data-url="{% url 'app:map-publish' object.pk %}?action=unpublish" class="btn btn-secondary publish">Unpublish</button>
+    <button data-url="{% url 'app:map-publish' object.pk %}?action=unpublish" class="btn btn-secondary publish">Unpublish Map</button>
     {% else %}
-    <button data-url="{% url 'app:map-publish' object.pk %}?action=publish" class="btn btn-primary publish">Publish</button>
+    <button data-url="{% url 'app:map-publish' object.pk %}?action=publish" class="btn btn-primary publish">Publish Map</button>
     {% endif %}
-    <a href="{% url 'app:map-update' object.pk %}" class="btn btn-warning">Edit</a>
-    <a href="{% url 'app:map-delete' object.pk %}" class="btn btn-danger">Delete</a>
+    <a href="{% url 'app:map-update' object.pk %}" class="btn btn-warning">Edit Title</a>
+    <a href="{% url 'app:map-delete' object.pk %}" class="btn btn-danger">Delete Map</a>
   </div>
 {% endblock %}
 
 {% block content %}
 <p class="text-muted">Created {{object.created}} <br/> Last modified {{object.modified}}</p>
+
+{% if object.pk and not object.components.all %}
+<button type="button" class="btn btn-sm btn-outline-primary component-action" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}">
+  add child
+</button>
+{% endif %}
+
+{% if object.components.all %}
 <div class="row">
   {% recursetree object.components.all %}
-    <div class="col-12 border-top">
-      <div class="m-1 row">
-        <div class="title">
+    <div class="col-12 ml-3 border-top">
+      <div class="row m-1">
+        <div class="title col-8">
           <p class="mb-0">{{ node.title }}{% if node.archivesspace_uri %} <span class="badge badge-secondary">AS</span>{% endif %}</p>
+        </div>
+        <div class="buttons col text-right">
+          <div class="btn-group btn-group-sm" role="group" aria-label="Add additional components">
+            <button class="btn btn-outline-primary component-action" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.parent.pk}}">add sibling</button>
+            <button class="btn btn-outline-primary component-action" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.pk}}">add child</button>
+          </div>
+          <button class="btn btn-sm btn-warning component-action" data-toggle="modal" data-target="#component_edit_modal" data-title="{{node.title}}" data-archivesspace_uri="{{node.archivesspace_uri}}" data-object="{{node.pk}}">edit</button>
+          <button class="btn btn-sm btn-danger component-action" data-toggle="modal" data-target="#component_delete_modal" data-object="{{node.pk}}">delete</button>
         </div>
       </div>
         {% if not node.is_leaf_node %}
@@ -32,4 +48,101 @@
      </div>
    {% endrecursetree %}
 </div>
+{% endif %}
+
+{% include "maps/component_create_modal.html" %}
+{% include "maps/component_edit_modal.html" %}
+{% include "maps/component_delete_modal.html" %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript">
+	// Add data to forms when modals are opened
+	$('.component-action').on('click', function(e){
+		e.preventDefault();
+		inputs = ['parent', 'map', 'object', 'title', 'archivesspace_uri']
+		form = $(this).data('target');
+		for (var i = 0; i < inputs.length; i++) {
+			$(form).find('input[name='+inputs[i]+']').val($(this).data(inputs[i]))
+		}
+	})
+
+ // Sends request to save component
+ function sendRequest(form) {
+	 $.ajax({
+		 type: form.attr('method'),
+		 url: form.attr('action'),
+		 data: form.serialize(),
+		 context: form,
+		 success: function(data, status) {
+			 $('#component_create_modal').modal('hide');
+			 location.reload();
+		 }
+	 })
+	}
+
+	// Saves component on save button click
+	$('.modal button.save').on('click', function(){
+		var form = $(this).closest('.modal').find('form')
+		form.find('#messages').empty()
+		form.find('input').each(function(){
+			$(this).prop('disabled', false)
+		})
+		if (form.find('input[name=title]').length || form.find('input[name=archivesspace_uri]').length) {
+			if (form.find('input[name=title]').val() || form.find('input[name=archivesspace_uri]').val()) {
+				sendRequest(form)
+			} else {
+				form.find('input[type=text]').each(function(){
+					$(this).addClass('is-invalid')
+				})
+				form.find('#messages').append('<div class="alert alert-danger">You must enter either a title or an ArchivesSpace URI.</div>')
+				return false
+			}
+		} else {
+			sendRequest(form)
+		}
+	});
+
+	// Search for ArchivesSpace resources
+	$('.resource_find').on('click', function(e){
+    e.preventDefault();
+		var form = $(this).closest('.modal').find('form')
+		form.find('#messages').empty()
+		var button = $(this)
+		if (form.find('input[name=archivesspace_uri]').val()) {
+			form.find('input[name=archivesspace_uri]').fadeTo(200, 0.5);
+			$.get("{% url 'app:component-ajax' %}?action=get_resource", {'resource_id': form.find('input[name=archivesspace_uri]').val()}, function(resp, status){
+	      if (resp.detail.success){
+					form.find('input[name=archivesspace_uri]').fadeTo(0, 1).show()
+					form.find('input[name=archivesspace_uri]').val(resp.detail.uri).prop('disabled', true)
+	        form.find('input[name=title]').val(resp.detail.title).prop('disabled', true)
+	      } else {
+	        form.find('input[name=archivesspace_uri]').fadeTo(0, 1).show()
+					console.log(form.find('#messages'))
+					form.find('#messages').append('<div class="alert alert-danger">'+resp.detail+'</div>')
+					return false
+	      }
+	    })
+		} else {
+			form.find('#messages').append('<div class="alert alert-danger">You must enter an ID to search for!</div>')
+		}
+  });
+
+  // Publish or unpublish maps
+	$('.modal').on('shown.bs.modal', function () {
+    $('input[name=title]').focus();
+	})
+
+  $('button.publish').on('click', function(e) {
+    e.preventDefault();
+    $.ajax({
+      method: "GET",
+      url: $(this).data('url'),
+      success: function(data, status) {
+        location.reload();
+      }
+    })
+  });
+</script>
 {% endblock %}
