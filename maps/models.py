@@ -19,5 +19,5 @@ class ArrangementMapComponent(MPTTModel):
 
 
 class DeletedArrangementMap(models.Model):
-    primary_key = models.IntegerField()
+    ref = models.CharField(max_length=100)
     deleted = models.DateTimeField(auto_now_add=True)
