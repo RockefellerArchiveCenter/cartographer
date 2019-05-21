@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  cartographer-db:
+    image: postgres:10.4
+    ports:
+      - "5432:5432"
+    volumes:
+      - /var/lib/postgresql/data/
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: cartographer
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: db
+  cartographer-web:
+    image: rockarch/cartographer
+    entrypoint: /code/entrypoint.sh
+    volumes:
+      - /code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - cartographer-db
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: cartographer
+        awslogs-region: us-east-1
+        awslogs-stream-prefix: web
+
+volumes:
+  cartographerdbvolume:
