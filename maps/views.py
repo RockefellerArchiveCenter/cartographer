@@ -106,6 +106,7 @@ class ComponentsAJAXView(APIView):
                     message['success'] = True
                 return Response({"detail": message}, status=200)
             except Exception as e:
+                print(e)
                 return Response({"detail": str(e)}, status=500)
         else:
             return Response({"detail": "Request must be AJAX"}, status=500)
@@ -157,5 +158,8 @@ class DeletedArrangementMapView(ListAPIView):
     Return paginated data about all Deleted Arrangement Maps.
     """
     model = DeletedArrangementMap
-    queryset = DeletedArrangementMap.objects.all().order_by('-deleted')
     serializer_class = DeletedArrangementMapSerializer
+
+    def get_queryset(self):
+        deleted_since = int(self.request.query_params.get('deleted_since', 0))
+        return DeletedArrangementMap.objects.filter(deleted__gte=datetime.fromtimestamp(deleted_since)).order_by('-deleted')

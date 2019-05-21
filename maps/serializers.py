@@ -58,11 +58,7 @@ class ArrangementMapListSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class DeletedArrangementMapSerializer(serializers.ModelSerializer):
-    ref = serializers.SerializerMethodField()
 
     class Meta:
         model = DeletedArrangementMap
         fields = ('ref', 'deleted')
-
-    def get_ref(self, obj):
-        return reverse('arrangementmap-detail', kwargs={'pk': obj.primary_key})
