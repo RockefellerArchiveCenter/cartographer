@@ -91,6 +91,9 @@ class CartographerTest(TestCase):
             request = self.factory.get(reverse(view[0]), format="json")
             response = view[1].as_view(actions={"get": "list"})(request)
             self.assertEqual(response.status_code, 200, "Wrong HTTP status code")
+        request = self.factory.get('{}?modified_since={}'.format(reverse('arrangementmap-list'), random.randint(1500000000, 2500000000)), format="json")
+        response = ArrangementMapViewset.as_view(actions={"get": "list"})(request)
+        self.assertEqual(response.status_code, 200, "Wrong HTTP status code")
 
     def api_detail_views(self):
         obj = random.choice(ArrangementMap.objects.all())
@@ -99,9 +102,11 @@ class CartographerTest(TestCase):
         self.assertEqual(response.status_code, 200, "Wrong HTTP status code")
 
     def delete_feed_view(self):
-        response = self.client.get(reverse('delete-feed'))
+        response = self.client.get(reverse('delete-feed'), format="json")
         self.assertEqual(response.status_code, 200, "Wrong HTTP status code")
         self.assertTrue(response.data['count'] > 0, "No deleted instances")
+        time_response = self.client.get('{}?deleted_since={}'.format(reverse('delete-feed'), random.randint(1500000000, 2500000000)), format="json")
+        self.assertEqual(time_response.status_code, 200, "Wrong HTTP status code")
 
     def schema(self):
         schema = self.client.get(reverse('schema-json', kwargs={"format": ".json"}))
@@ -112,10 +117,10 @@ class CartographerTest(TestCase):
         self.publish_maps()
         self.edit_maps()
         self.delete_maps()
-        self.delete_feed_view()
         self.create_components()
         self.edit_components()
         self.api_list_views()
         self.api_detail_views()
         self.delete_components()
+        self.delete_feed_view()
         self.schema()
