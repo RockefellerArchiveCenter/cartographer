@@ -129,21 +129,21 @@ REST_FRAMEWORK = {
 ASPACE = CF.ASPACE
 
 # AWS Deployment configuration
-EC2_PRIVATE_IP = None
-
-try:
-    resp = requests.get('http://169.254.170.2/v2/metadata')
-    data = resp.json()
-    # print(data)
-
-    container_meta = data['Containers'][0]
-    EC2_PRIVATE_IP = container_meta['Networks'][0]['IPv4Addresses'][0]
-except:
-    # silently fail as we may not be in an ECS environment
-    pass
-
-if EC2_PRIVATE_IP:
-    # Be sure your ALLOWED_HOSTS is a list NOT a tuple
-    # or .append() will fail
-    ALLOWED_HOSTS.append(EC2_PRIVATE_IP)
-    DATABASES = CF.AWS_DATABASES
+# EC2_PRIVATE_IP = None
+#
+# try:
+#     resp = requests.get('http://169.254.170.2/v2/metadata')
+#     data = resp.json()
+#     # print(data)
+#
+#     container_meta = data['Containers'][0]
+#     EC2_PRIVATE_IP = container_meta['Networks'][0]['IPv4Addresses'][0]
+# except:
+#     # silently fail as we may not be in an ECS environment
+#     pass
+#
+# if EC2_PRIVATE_IP:
+#     # Be sure your ALLOWED_HOSTS is a list NOT a tuple
+#     # or .append() will fail
+#     ALLOWED_HOSTS.append(EC2_PRIVATE_IP)
+#     DATABASES = CF.AWS_DATABASES

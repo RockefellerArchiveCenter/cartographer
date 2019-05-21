@@ -36,8 +36,8 @@
             <button class="btn btn-outline-primary component-action" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.parent.pk}}">add sibling</button>
             <button class="btn btn-outline-primary component-action" data-toggle="modal" data-target="#component_create_modal" data-map="{{object.pk}}" data-parent="{{node.pk}}">add child</button>
           </div>
-          <button class="btn btn-sm btn-warning component-action" data-toggle="modal" data-target="#component_edit_modal" data-title="{{node.title}}" data-archivesspace_uri="{{node.archivesspace_uri}}" data-object="{{node.pk}}">edit</button>
-          <button class="btn btn-sm btn-danger component-action" data-toggle="modal" data-target="#component_delete_modal" data-object="{{node.pk}}">delete</button>
+          <button class="btn btn-sm btn-warning component-action" data-toggle="modal" data-target="#component_edit_modal" data-map="{{object.pk}}" data-title="{{node.title}}" data-archivesspace_uri="{{node.archivesspace_uri}}" data-object="{{node.pk}}">edit</button>
+          <button class="btn btn-sm btn-danger component-action" data-toggle="modal" data-target="#component_delete_modal" data-map="{{object.pk}}" data-object="{{node.pk}}">delete</button>
         </div>
       </div>
         {% if not node.is_leaf_node %}

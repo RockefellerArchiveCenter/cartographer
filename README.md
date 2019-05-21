@@ -39,7 +39,7 @@ To deploy in AWS Fargate, install the AWS ECS-CLI, set up the necessary configur
 
 | Method | URL | Parameters | Response  | Behavior  |
 |--------|-----|---|---|---|
-|GET|/maps||200|Returns a list of maps, ordered by most recent first|
+|GET|/maps|`modified_since` - returns only maps modified since the time provided (as a Unix timestamp) <br/>`published` - if present, returns only published maps|200|Returns a list of maps, ordered by most recent first|
 |GET|/delete-feed||200|Returns a list of deleted maps, ordered by most recent first|
 |GET|/status||200|Returns the status of the application|
 |GET|/schema.json||200|Returns the OpenAPI schema for this application|

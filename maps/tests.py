@@ -63,6 +63,7 @@ class CartographerTest(TestCase):
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
             self.assertEqual(response.status_code, 200, "Wrong HTTP response code")
         self.assertEqual(len(ArrangementMapComponent.objects.all()), self.component_number, "Wrong number of instances created")
+        self.assertTrue(map.created < map.modified, "Modified time was not updated")
 
     def edit_components(self):
         component = random.choice(ArrangementMapComponent.objects.all())
@@ -83,6 +84,7 @@ class CartographerTest(TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200, "Wrong HTTP response code")
         self.assertEqual(len(ArrangementMapComponent.objects.all()), self.component_number - delete_number, "Wrong number of objects deleted")
+        self.assertTrue(component.map.created < component.map.modified, "Modified time was not updated")
 
     def api_list_views(self):
         for view in [('arrangementmap-list', ArrangementMapViewset), ('arrangementmapcomponent-list', ArrangementMapComponentViewset)]:
