@@ -3,6 +3,7 @@ from datetime import datetime
 from asnake.aspace import ASpace
 from django.http import QueryDict
 from django.urls import reverse, reverse_lazy
+from django.utils.timezone import make_aware
 from django.views.generic import TemplateView, CreateView, DeleteView, DetailView, ListView, UpdateView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
@@ -131,8 +132,8 @@ class ArrangementMapViewset(ReadOnlyModelViewSet):
     def get_queryset(self):
         modified_since = int(self.request.query_params.get('modified_since', 0))
         if 'published' in self.request.query_params:
-            return ArrangementMap.objects.filter(modified__gte=datetime.fromtimestamp(modified_since), publish=True).order_by('-modified')
-        return ArrangementMap.objects.filter(modified__gte=datetime.fromtimestamp(modified_since)).order_by('-modified')
+            return ArrangementMap.objects.filter(modified__gte=make_aware(datetime.fromtimestamp(modified_since)), publish=True).order_by('-modified')
+        return ArrangementMap.objects.filter(modified__gte=make_aware(datetime.fromtimestamp(modified_since))).order_by('-modified')
 
 
 class ArrangementMapComponentViewset(ReadOnlyModelViewSet):
@@ -162,4 +163,4 @@ class DeletedArrangementMapView(ListAPIView):
 
     def get_queryset(self):
         deleted_since = int(self.request.query_params.get('deleted_since', 0))
-        return DeletedArrangementMap.objects.filter(deleted__gte=datetime.fromtimestamp(deleted_since)).order_by('-deleted')
+        return DeletedArrangementMap.objects.filter(deleted__gte=make_aware(datetime.fromtimestamp(deleted_since))).order_by('-deleted')
