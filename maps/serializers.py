@@ -25,13 +25,12 @@ class ArrangementMapSerializer(serializers.HyperlinkedModelSerializer):
 
     def process_tree_item(self, objects, tree):
         for item in objects:
+            parent = item.parent if item.parent else item.map
             ref = self.get_ref(item)
             if item.is_leaf_node():
-                tree.append({'title': item.title, 'ref': ref, 'parent': self.get_ref(item.parent)}
-                            if item.parent else {'title': item.title, 'ref': ref})
+                tree.append({'title': item.title, 'ref': ref, 'parent': self.get_ref(parent)})
             else:
-                tree.append({'title': item.title, 'ref': ref, 'parent': self.get_ref(item.parent), 'children': []}
-                            if item.parent else {'title': item.title, 'ref': ref, 'children': []})
+                tree.append({'title': item.title, 'ref': ref, 'parent': self.get_ref(parent), 'children': []})
                 self.process_tree_item(item.children.all(), tree[-1].get('children'))
         return tree
 
