@@ -25,3 +25,5 @@ ASPACE = {
   "password": "admin",
   "repo_id": 2,
 }
+
+ALLOWED_HOSTS = ['cartographer-web', 'localhost']

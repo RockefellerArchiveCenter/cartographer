@@ -27,7 +27,7 @@ SECRET_KEY = '^6yxvs8k9czbwt9o8!y^ay)$l4^*9d(eykpo8%u5)-js9n6wfk'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = CF.ALLOWED_HOSTS
 
 # Application definition
 
