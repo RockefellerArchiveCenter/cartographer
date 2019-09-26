@@ -109,7 +109,7 @@ class CartographerTest(TestCase):
         self.assertEqual(time_response.status_code, 200, "Wrong HTTP status code")
 
     def schema(self):
-        schema = self.client.get(reverse('schema-json', kwargs={"format": ".json"}))
+        schema = self.client.get(reverse('schema'))
         self.assertEqual(schema.status_code, 200, "Wrong HTTP code")
 
     def test_maps(self):
