@@ -14,5 +14,9 @@
   <tr><td>No arrangement maps.</td></tr>
 {% endfor %}
 </table>
+{% if recent_maps.count > 0 %}
 <a class="btn btn-secondary" href="{% url 'app:map-list' %}">View all maps</a>
+{% else %}
+<a class="btn btn-primary" href="{% url 'app:map-new' %}">Create new map</a>
+{% endif %}
 {% endblock %}
