@@ -23,4 +23,7 @@
   <tr><td>No arrangement maps.</td></tr>
 {% endfor %}
 </table>
+{% if object_list.count == 0 %}
+<a class="btn btn-primary" href="{% url 'app:map-new' %}">Create new map</a>
+{% endif %}
 {% endblock %}
