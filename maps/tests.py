@@ -14,6 +14,8 @@ def get_title_string(length=10):
     return ''.join(random.choice(letters) for i in range(10))
 
 
+# TODO: this should really just test CRUD actions through the API
+
 class CartographerTest(TestCase):
     def setUp(self):
         self.map_number = random.randint(2, 10)
@@ -26,15 +28,6 @@ class CartographerTest(TestCase):
             map = ArrangementMap.objects.create(title=get_title_string())
             self.assertEqual(map.publish, False, "Map was accidentally published")
         self.assertEqual(len(ArrangementMap.objects.all()), self.map_number, "Wrong number of instances created")
-
-    def publish_maps(self):
-        map = random.choice(ArrangementMap.objects.all())
-        for action in [('publish', True), ('unpublish', False)]:
-            response = self.client.get(reverse('app:map-publish', kwargs={'pk': map.pk}),
-                                       {'action': action[0]}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-            map.refresh_from_db()
-            self.assertEqual(response.status_code, 200, "Wrong HTTP response code")
-            self.assertEqual(map.publish, action[1], "Publish was not set on instance")
 
     def edit_maps(self):
         map = random.choice(ArrangementMap.objects.all())
@@ -51,40 +44,6 @@ class CartographerTest(TestCase):
             map.delete()
         self.assertEqual(len(ArrangementMap.objects.all()), self.map_number-delete_number, "Wrong number of instances deleted")
         self.assertEqual(len(DeletedArrangementMap.objects.all()), delete_number, "DeletedArrangementMap objects were not created on delete")
-
-    def create_components(self):
-        map = random.choice(ArrangementMap.objects.all())
-        for i in range(self.component_number):
-            parent = random.choice(ArrangementMapComponent.objects.all()).pk if len(ArrangementMapComponent.objects.all()) else ""
-            response = self.client.get(reverse('app:component-ajax'),
-                                       {'action': 'create', 'title': get_title_string(20),
-                                        'map': map.pk, 'archivesspace_uri': get_title_string(10),
-                                        'parent': parent},
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-            self.assertEqual(response.status_code, 200, "Wrong HTTP response code")
-        self.assertEqual(len(ArrangementMapComponent.objects.all()), self.component_number, "Wrong number of instances created")
-        self.assertTrue(map.created < map.modified, "Modified time was not updated")
-
-    def edit_components(self):
-        component = random.choice(ArrangementMapComponent.objects.all())
-        response = self.client.get(reverse('app:component-ajax'),
-                                   {'action': 'update', 'title': get_title_string(15),
-                                    'archivesspace_uri': get_title_string(5), 'object': component.pk},
-                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200, "Wrong HTTP response code")
-        component.refresh_from_db()
-        self.assertEqual(len(ArrangementMapComponent.objects.all()), self.component_number, "Edit created a new instance")
-        self.assertTrue(component.created < component.modified, "Modified time was not updated")
-
-    def delete_components(self):
-        component = random.choice(ArrangementMapComponent.objects.all())
-        delete_number = component.get_descendant_count() + 1
-        response = self.client.get(reverse('app:component-ajax'),
-                                   {'action': 'delete', 'object': component.pk},
-                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200, "Wrong HTTP response code")
-        self.assertEqual(len(ArrangementMapComponent.objects.all()), self.component_number - delete_number, "Wrong number of objects deleted")
-        self.assertTrue(component.map.created < component.map.modified, "Modified time was not updated")
 
     def api_list_views(self):
         for view in [('arrangementmap-list', ArrangementMapViewset), ('arrangementmapcomponent-list', ArrangementMapComponentViewset)]:
@@ -114,13 +73,9 @@ class CartographerTest(TestCase):
 
     def test_maps(self):
         self.create_maps()
-        self.publish_maps()
         self.edit_maps()
         self.delete_maps()
-        self.create_components()
-        self.edit_components()
         self.api_list_views()
         self.api_detail_views()
-        self.delete_components()
         self.delete_feed_view()
         self.schema()

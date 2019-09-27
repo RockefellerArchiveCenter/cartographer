@@ -6,7 +6,7 @@ from .models import ArrangementMap, ArrangementMapComponent, DeletedArrangementM
 class ArrangementMapComponentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ArrangementMapComponent
-        fields = ('title',)
+        fields = ('title', 'map')
 
 
 class ArrangementMapComponentListSerializer(serializers.HyperlinkedModelSerializer):

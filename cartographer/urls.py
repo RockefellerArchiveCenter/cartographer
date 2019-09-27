@@ -20,5 +20,4 @@ urlpatterns = [
     re_path(r'^schema/', schema_view, name='schema'),
     path('api/', include(router.urls)),
     path('api/delete-feed/', DeletedArrangementMapView.as_view(), name='delete-feed'),
-    path('', include('maps.urls')),
 ]

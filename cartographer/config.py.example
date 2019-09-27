@@ -27,3 +27,5 @@ ASPACE = {
 }
 
 ALLOWED_HOSTS = ['cartographer-web', 'localhost']
+
+STATIC_URL = '/static/'
