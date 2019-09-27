@@ -225,3 +225,24 @@
     {% endif %}
   {% endif %}
 {% endblock content %}
+
+{% block script %}
+  <script>
+    window.drf = {
+      csrfHeaderName: "{{ csrf_header_name|default:'X-CSRFToken' }}",
+      csrfCookieName: "{{ csrf_cookie_name|default:'csrftoken' }}"
+    };
+  </script>
+  <script src="{% static "dist/jquery/jquery-3.3.1.min.js" %}"></script>
+  <script src="{% static "rest_framework/js/ajax-form.js" %}"></script>
+  <script src="{% static "rest_framework/js/csrf.js" %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+  <script src="{% static "rest_framework/js/prettify-min.js" %}"></script>
+  <script src="{% static "rest_framework/js/default.js" %}"></script>
+  <script>
+    $(document).ready(function() {
+      $('form').ajaxForm();
+    });
+  </script>
+{% endblock %}
