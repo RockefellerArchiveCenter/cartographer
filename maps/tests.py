@@ -6,6 +6,7 @@ from django.urls import reverse
 from rest_framework.test import APIRequestFactory
 
 from .models import ArrangementMap, ArrangementMapComponent, DeletedArrangementMap
+from .serializers import ArrangementMapSerializer
 from .views import ArrangementMapViewset, ArrangementMapComponentViewset
 
 
@@ -13,8 +14,6 @@ def get_title_string(length=10):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(10))
 
-
-# TODO: this should really just test CRUD actions through the API
 
 class CartographerTest(TestCase):
     def setUp(self):
@@ -25,15 +24,23 @@ class CartographerTest(TestCase):
 
     def create_maps(self):
         for i in range(self.map_number):
-            map = ArrangementMap.objects.create(title=get_title_string())
-            self.assertEqual(map.publish, False, "Map was accidentally published")
+            request = self.factory.post(reverse('arrangementmap-list'), format="json", data={'title': get_title_string()})
+            response = ArrangementMapViewset.as_view(actions={"post": "create"})(request)
+            self.assertEqual(response.status_code, 201, "Wrong HTTP status code")
         self.assertEqual(len(ArrangementMap.objects.all()), self.map_number, "Wrong number of instances created")
+        for map in ArrangementMap.objects.all():
+            self.assertEqual(map.publish, False, "Map was set to publish.")
 
     def edit_maps(self):
         map = random.choice(ArrangementMap.objects.all())
-        map.title = get_title_string(20)
-        map.save()
+        title = get_title_string(20)
+        map.title = title
+        serializer = ArrangementMapSerializer(map)
+        request = self.factory.put(reverse('arrangementmap-detail', kwargs={"pk": map.pk}), format="json", data=serializer.data)
+        response = ArrangementMapViewset.as_view(actions={"put": "update"})(request, pk=map.pk)
+        self.assertEqual(response.status_code, 200, "Wrong HTTP status code")
         map.refresh_from_db()
+        self.assertEqual(title, map.title, "Title was not updated")
         self.assertEqual(len(ArrangementMap.objects.all()), self.map_number, "Edit created a new instance")
         self.assertTrue(map.created < map.modified, "Modified time was not updated")
 
@@ -41,11 +48,13 @@ class CartographerTest(TestCase):
         delete_number = random.randint(1, self.map_number-1)
         for i in range(delete_number):
             map = random.choice(ArrangementMap.objects.all())
-            map.delete()
+            request = self.factory.delete(reverse('arrangementmap-detail', kwargs={"pk": map.pk}), format="json")
+            response = ArrangementMapViewset.as_view(actions={"delete": "destroy"})(request, pk=map.pk)
+            self.assertEqual(response.status_code, 204, "Wrong HTTP status code")
         self.assertEqual(len(ArrangementMap.objects.all()), self.map_number-delete_number, "Wrong number of instances deleted")
         self.assertEqual(len(DeletedArrangementMap.objects.all()), delete_number, "DeletedArrangementMap objects were not created on delete")
 
-    def api_list_views(self):
+    def list_views(self):
         for view in [('arrangementmap-list', ArrangementMapViewset), ('arrangementmapcomponent-list', ArrangementMapComponentViewset)]:
             request = self.factory.get(reverse(view[0]), format="json")
             response = view[1].as_view(actions={"get": "list"})(request)
@@ -54,7 +63,7 @@ class CartographerTest(TestCase):
         response = ArrangementMapViewset.as_view(actions={"get": "list"})(request)
         self.assertEqual(response.status_code, 200, "Wrong HTTP status code")
 
-    def api_detail_views(self):
+    def detail_views(self):
         obj = random.choice(ArrangementMap.objects.all())
         request = self.factory.get(reverse('arrangementmap-detail', kwargs={"pk": obj.pk}), format="json")
         response = ArrangementMapViewset.as_view(actions={"get": "retrieve"})(request, pk=obj.pk)
@@ -75,7 +84,7 @@ class CartographerTest(TestCase):
         self.create_maps()
         self.edit_maps()
         self.delete_maps()
-        self.api_list_views()
-        self.api_detail_views()
+        self.list_views()
+        self.detail_views()
         self.delete_feed_view()
         self.schema()
