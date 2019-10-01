@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -f manage.py ]; then
-  cd cartographer
+  cd api
 fi
 
 ./wait-for-it.sh cartographer-db:5432 -- echo "Creating config file"
@@ -19,4 +19,4 @@ python manage.py makemigrations && python manage.py migrate
 
 #Start server
 echo "Starting server"
-python manage.py runserver 0.0.0.0:8007
+python manage.py runserver 0.0.0.0:8000

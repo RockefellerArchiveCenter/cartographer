@@ -26,6 +26,8 @@ ASPACE = {
   "repo_id": 2,
 }
 
-ALLOWED_HOSTS = ['cartographer-web', 'localhost']
+ALLOWED_HOSTS = ['cartographer-backend', 'localhost']
 
 STATIC_URL = '/static/'
+
+CORS_ORIGIN_WHITELIST = ('http://localhost:3000',)

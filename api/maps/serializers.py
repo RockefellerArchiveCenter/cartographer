@@ -3,19 +3,19 @@ from rest_framework import serializers
 from .models import ArrangementMap, ArrangementMapComponent, DeletedArrangementMap
 
 
-class ArrangementMapComponentSerializer(serializers.HyperlinkedModelSerializer):
+class ArrangementMapComponentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArrangementMapComponent
         fields = ('title', 'map')
 
 
-class ArrangementMapComponentListSerializer(serializers.HyperlinkedModelSerializer):
+class ArrangementMapComponentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArrangementMapComponent
-        fields = ('url', 'title',)
+        fields = ('id', 'title',)
 
 
-class ArrangementMapSerializer(serializers.HyperlinkedModelSerializer):
+class ArrangementMapSerializer(serializers.ModelSerializer):
     children = serializers.SerializerMethodField()
     ref = serializers.SerializerMethodField()
 
@@ -50,10 +50,10 @@ class ArrangementMapSerializer(serializers.HyperlinkedModelSerializer):
             return reverse('arrangementmap-detail', kwargs={'pk': obj.pk})
 
 
-class ArrangementMapListSerializer(serializers.HyperlinkedModelSerializer):
+class ArrangementMapListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArrangementMap
-        fields = ('url', 'title',)
+        fields = ('id', 'title',)
 
 
 class DeletedArrangementMapSerializer(serializers.ModelSerializer):
