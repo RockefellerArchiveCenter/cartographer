@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 import {
   Button,
@@ -11,6 +12,7 @@ import {
 class MapForm extends Component {
  constructor(props) {
    super(props);
+   this.toggle = this.props.toggle
    this.state = {
      activeItem: this.props.activeItem
    };
@@ -23,10 +25,20 @@ class MapForm extends Component {
    const activeItem = { ...this.state.activeItem, [name]: value };
    this.setState({ activeItem });
  };
+ handleSubmit = item => {
+   if (item.id) {
+     axios
+       .put(`/api/maps/${item.id}/`, item)
+       .then(res => this.toggle());
+     return;
+   }
+   axios
+     .post("/api/maps/", item)
+     .then(res => this.toggle());
+ };
  render() {
-   const { onSave, onCancel } = this.props;
    return (
-     <Form>
+     <Form onSubmit={() => this.handleSubmit(this.state.activeItem)}>
        <FormGroup>
          <Label for="title">Title</Label>
          <Input
@@ -37,10 +49,10 @@ class MapForm extends Component {
            placeholder="Enter Arrangement Map title"
          />
        </FormGroup>
-       <Button color="primary" className="mr-2" onClick={() => onSave(this.state.activeItem)}>
+       <Button type="submit" color="primary" className="mr-2" >
          Save
        </Button>
-       <Button color="danger" onClick={() => onCancel()}>
+       <Button color="danger" onClick={() => this.toggle()}>
          Cancel
        </Button>
      </Form>

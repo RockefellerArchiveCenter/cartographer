@@ -27,6 +27,9 @@ export default class ConfirmModal extends Component {
           <Button color="danger" onClick={() => onConfirm(this.state.activeItem)}>
             Yes, delete it
           </Button>
+          <Button color="secondary" onClick={toggle}>
+            Nope, cancel
+          </Button>
         </ModalFooter>
       </Modal>
     );

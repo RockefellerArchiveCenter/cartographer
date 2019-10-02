@@ -8,16 +8,15 @@ class MapList extends Component {
    super(props);
    this.state = {
      deleteModal: false,
-     addMap: false,
-     mapList: true,
+     showForm: false,
      arrangementMapList: []
    };
  }
  componentDidMount() {
    this.refreshList();
  }
- toggleModal = () => {
-   this.setState({ deleteModal: !this.state.deleteModal });
+ toggleModal = item => {
+   this.setState({ activeItem: item, deleteModal: !this.state.deleteModal });
  }
  refreshList = () => {
    axios
@@ -25,12 +24,8 @@ class MapList extends Component {
      .then(res => this.setState({ arrangementMapList: res.data.results }))
      .catch(err => console.log(err));
  };
- confirmDelete = item => {
-   console.log(this.state.deleteModal)
-   this.setState({ activeItem: item, deleteModal: !this.state.deleteModal });
- }
  handleDelete = item => {
-   this.toggleModal()
+   this.toggleModal(item)
    axios
      .delete(`http://localhost:8000/api/maps/${item.id}`)
      .then(res => this.refreshList());
@@ -58,7 +53,7 @@ class MapList extends Component {
                  Edit
                </button>
                <button
-                 onClick={() => this.confirmDelete(item)}
+                 onClick={() => this.toggleModal(item)}
                  className="btn btn-danger"
                >
                  Delete
@@ -73,7 +68,7 @@ class MapList extends Component {
            activeItem={this.state.activeItem}
            toggle={this.toggleModal}
            onConfirm={this.handleDelete}
-           message="Are you sure you want to delete this component?"
+           message={`Are you sure you want to delete ${this.state.activeItem.title}?`}
          />
        ) : null}
      </div>
