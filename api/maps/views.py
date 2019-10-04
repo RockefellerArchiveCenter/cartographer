@@ -43,8 +43,8 @@ class ArrangementMapComponentViewset(ModelViewSet):
     list:
     Return paginated data about all ArrangementMapComponent objects.
     """
-    model = ArrangementMap
-    queryset = ArrangementMap.objects.all().order_by('-modified')
+    model = ArrangementMapComponent
+    queryset = ArrangementMapComponent.objects.all().order_by('-modified')
 
     def get_serializer_class(self):
         if self.action == 'list':

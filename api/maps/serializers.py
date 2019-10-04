@@ -12,7 +12,7 @@ class ArrangementMapComponentSerializer(serializers.ModelSerializer):
 class ArrangementMapComponentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArrangementMapComponent
-        fields = ('id', 'title',)
+        fields = ('id', 'title')
 
 
 class ArrangementMapSerializer(serializers.ModelSerializer):
@@ -28,9 +28,9 @@ class ArrangementMapSerializer(serializers.ModelSerializer):
             parent = item.parent if item.parent else item.map
             ref = self.get_ref(item)
             if item.is_leaf_node():
-                tree.append({'title': item.title, 'ref': ref, 'parent': self.get_ref(parent)})
+                tree.append({'id': item.pk,'title': item.title, 'ref': ref, 'parent': self.get_ref(parent)})
             else:
-                tree.append({'title': item.title, 'ref': ref, 'parent': self.get_ref(parent), 'children': []})
+                tree.append({'id': item.pk, 'title': item.title, 'ref': ref, 'parent': self.get_ref(parent), 'children': []})
                 self.process_tree_item(item.children.all(), tree[-1].get('children'))
         return tree
 

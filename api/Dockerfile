@@ -1,8 +1,7 @@
 FROM python:3.6
 
 ENV PYTHONUNBUFFERED 1
-RUN mkdir /code
-WORKDIR /code
-ADD requirements.txt /code/
+WORKDIR /code/api/
+ADD requirements.txt /code/api/
 RUN pip install --upgrade pip && pip install -r requirements.txt
-ADD . /code/
+ADD . /code/api/

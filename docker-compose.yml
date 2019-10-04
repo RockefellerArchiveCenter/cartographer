@@ -7,7 +7,7 @@ services:
       - cartographerdbvolume:/var/lib/postgresql/data/
   cartographer-backend:
     build: ./api
-    entrypoint: /code/entrypoint.sh
+    entrypoint: /code/api/entrypoint.sh
     volumes:
       - ./api:/code/api
     ports:
