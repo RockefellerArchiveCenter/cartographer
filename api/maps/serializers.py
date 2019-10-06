@@ -21,7 +21,7 @@ class ArrangementMapSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ArrangementMap
-        fields = ('ref', 'title', 'children', 'publish', 'created', 'modified')
+        fields = ('id', 'ref', 'title', 'children', 'publish', 'created', 'modified')
 
     def process_tree_item(self, objects, tree):
         for item in objects:
