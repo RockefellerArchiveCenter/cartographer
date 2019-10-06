@@ -6,44 +6,34 @@ import axios from "axios";
 class MapList extends Component {
  constructor(props) {
    super(props);
-   this.toggle = this.props.toggle
    this.state = {
      deleteModal: false,
-     showForm: false,
      arrangementMapList: []
    };
- }
+ };
  componentDidMount() {
    this.refreshList();
- }
+ };
  toggleModal = map => {
    this.setState({ activeMap: map, deleteModal: !this.state.deleteModal });
- }
+ };
  refreshList = () => {
    axios
      .get("/api/maps/")
      .then(res => this.setState({ arrangementMapList: res.data.results }))
      .catch(err => console.log(err));
  };
- newMap = () => {
-   const item = { title: "" };
-   this.toggle(item)
- };
  handleDelete = item => {
    axios
      .delete(`http://localhost:8000/api/maps/${item.id}`)
      .then(res => this.refreshList());
-  this.toggleModal(item)
+   this.toggleModal(item)
  };
  render() {
    return (
      <div className="row">
       <div className="col-md-12">
-        <div className="mb-3 text-right">
-          <button onClick={this.newMap} className="btn btn-primary">
-            Add arrangement map
-          </button>
-        </div>
+       <h1>Arrangement Maps</h1>
        <div className="card p-3">
          <ul className="list-group list-group-flush">
           {this.state.arrangementMapList.length ? (this.state.arrangementMapList.map(item => (
@@ -57,12 +47,12 @@ class MapList extends Component {
                  {item.title}
                </span>
                <span>
-                 <button
-                   onClick={() => this.toggle(item)}
+                 <a
+                   href={`/maps/${item.id}`}
                    className="btn btn-secondary mr-2"
                  >
                    Edit
-                 </button>
+                 </a>
                  <button
                    onClick={() => this.toggleModal(item)}
                    className="btn btn-danger"

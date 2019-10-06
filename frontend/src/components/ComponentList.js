@@ -10,25 +10,12 @@ class ComponentList extends Component {
    this.state = {
      detailModal: false,
      confirmModal: false,
-     activeComponent: {
-       title: ""
-     },
-     activeMap: this.props.activeMap,
-     componentList: []
+     activeComponent: {title: ""},
    };
  }
- componentDidMount() {
-   this.refreshList(this.props.activeMap)
- };
- refreshList = map => {
-   axios
-     .get(`/api/maps/${map.id}`)
-     .then(res => this.setState({ componentList: res.data.children }))
-     .catch(err => console.log(err));
- };
  toggleDetailModal = (item, onSave) => {
    this.setState({ activeComponent: item, onSave: onSave, detailModal: !this.state.detailModal });
-   this.refreshList(this.state.activeMap);
+   this.props.refresh();
  };
  toggleConfirmModal = item => {
    this.setState({ activeComponent: item, confirmModal: !this.state.confirmModal });
@@ -64,14 +51,14 @@ class ComponentList extends Component {
      <div>
        <div className="row">
          <div className="col-md-12">
-             <div className="mb-3 text-right">
+           <div className="card p-3">
+             <div className="mb-3">
                <button onClick={() => this.toggleDetailModal(this.state.activeComponent)} className="btn btn-primary">
                  Add arrangement map component
                </button>
              </div>
-           <div className="card p-3">
              <ul className="list-group list-group-flush">
-              {this.state.componentList ? (this.state.componentList.map(item => (
+              {this.props.items ? (this.props.items.map(item => (
                  <li
                    key={item.id}
                    className="list-group-item d-flex justify-content-between align-items-center"
@@ -111,7 +98,7 @@ class ComponentList extends Component {
              {this.state.detailModal ? (
                <ComponentModal
                  activeComponent={this.state.activeComponent}
-                 activeMap={this.state.activeMap}
+                 activeMap={this.props.activeMap}
                  toggle={this.toggleDetailModal}
                  onSubmit={this.handleSubmit}
                />) : null}

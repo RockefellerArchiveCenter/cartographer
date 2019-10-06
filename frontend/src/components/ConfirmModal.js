@@ -9,12 +9,6 @@ import {
 } from "reactstrap";
 
 export default class ConfirmModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeItem: this.props.activeItem
-    };
-  }
   render() {
     const { toggle, message, onConfirm } = this.props;
     return (

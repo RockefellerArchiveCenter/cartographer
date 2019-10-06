@@ -13,12 +13,20 @@ import {
 class MapForm extends Component {
  constructor(props) {
    super(props);
-   this.toggle = this.props.toggle
    this.state = {
+     activeMap: {"title": "", },
      addModal: false,
-     activeMap: this.props.activeMap
    };
  };
+ componentDidMount() {
+   this.refreshMap();
+ };
+ refreshMap = () => {
+   axios
+     .get(`/api/maps/${this.props.match.params.id}`)
+     .then(res => this.setState({ activeMap: res.data }))
+     .catch(err => console.log(err));
+ }
  handleChange = e => {
    let { name, value } = e.target;
    if (e.target.type === "checkbox") {
@@ -31,20 +39,21 @@ class MapForm extends Component {
    if (map.id) {
      axios
        .put(`/api/maps/${map.id}/`, map)
-       .then(res => this.toggle());
+       .then(res => this.refreshMap());
      return;
    }
    axios
      .post("/api/maps/", map)
-     .then(res => this.toggle());
+     .then(res => this.refreshMap());
  };
  render() {
    return (
      <div>
-      <Form onSubmit={() => this.handleSubmit(this.state.activeMap)}>
-        <FormGroup>
+      <Form className="row mb-4" inline={true}>
+        <FormGroup className="col-md-10">
           <Label for="title">Title</Label>
             <Input
+              className="col-md-12"
               type="text"
               name="title"
               onChange={this.handleChange}
@@ -52,16 +61,22 @@ class MapForm extends Component {
               placeholder="Enter Arrangement Map title"
             />
           </FormGroup>
-          <Button type="submit" color="primary" className="mr-2">
+        </Form>
+        {this.state.activeMap.id ? (
+          <ComponentList
+            activeMap={this.state.activeMap}
+            items={this.state.activeMap.children}
+            refresh={this.refreshMap}
+          />
+        ) : null}
+        <div className="mt-4">
+          <Button color="primary" className="mr-2" onClick={() => this.handleSubmit(this.state.activeMap)}>
             Save
           </Button>
-          <Button color="danger" onClick={() => this.toggle(this.state.activeMap)}>
+          <a color="danger" className="btn btn-danger" href="/">
             Cancel
-          </Button>
-        </Form>
-        <ComponentList
-          activeMap={this.state.activeMap}
-        />
+          </a>
+        </div>
       </div>
     );
   }
