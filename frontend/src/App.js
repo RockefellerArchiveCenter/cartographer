@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import MapForm from "./components/MapForm";
 import MapList from "./components/MapList";
 
@@ -38,9 +38,11 @@ class App extends Component {
         <div className="row mt-4">
           <div className="col-md-8 col-sm-10 mx-auto p-0">
           <Router>
-            <Route exact path="/" component={MapList} />
-            <Route exact path="/maps/new" component={MapForm} />
-            <Route path="/maps/:id" component={MapForm} />
+            <Switch>
+              <Route exact path="/" component={MapList} />
+              <Route exact path="/maps/new" component={MapForm} />
+              <Route path="/maps/:id" component={MapForm} />
+            </Switch>
           </Router>
           </div>
         </div>

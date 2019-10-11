@@ -22,10 +22,12 @@ class MapForm extends Component {
    this.refreshMap();
  };
  refreshMap = () => {
-   axios
-     .get(`/api/maps/${this.props.match.params.id}`)
-     .then(res => this.setState({ activeMap: res.data }))
-     .catch(err => console.log(err));
+   if (this.props.match.params.id) {
+     axios
+       .get(`/api/maps/${this.props.match.params.id}`)
+       .then(res => this.setState({ activeMap: res.data }))
+       .catch(err => console.log(err));
+   }
  }
  handleChange = e => {
    let { name, value } = e.target;
