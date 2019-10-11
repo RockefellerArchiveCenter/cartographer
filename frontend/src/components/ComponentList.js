@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import SortableTree from 'react-sortable-tree';
+import 'react-sortable-tree/style.css';
 import ComponentModal from './ComponentModal'
 import ConfirmModal from './ConfirmModal'
 import axios from "axios";
@@ -14,7 +16,9 @@ class ComponentList extends Component {
    };
  }
  toggleDetailModal = (item, onSave) => {
+   console.log(item)
    this.setState({ activeComponent: item, onSave: onSave, detailModal: !this.state.detailModal });
+   console.log(this.state)
    this.props.refresh();
  };
  toggleConfirmModal = item => {
@@ -25,25 +29,25 @@ class ComponentList extends Component {
    if (item.id) {
      axios
        .put(`/api/components/${item.id}/`, item)
-       .then(res => this.toggleDetailModal(this.state.activeMap));
+       .then(res => this.toggleDetailModal());
      return;
    }
    axios
      .post("/api/components/", item)
-     .then(res => this.toggleDetailModal(this.state.activeMap));
+     .then(res => this.toggleDetailModal());
  };
  handleChange = e => {
    let { name, value } = e.target;
-   // if (e.target.type === "checkbox") {
-   //   value = e.target.checked;
-   // }
+   if (e.target.type === "checkbox") {
+     value = e.target.checked;
+   }
    const activeComponent = { ...this.state.activeComponent, [name]: value };
    this.setState({ activeComponent });
  };
  handleDelete = component => {
    axios
      .delete(`/api/components/${component.id}`)
-     .then(res => this.refreshList(this.state.activeMap))
+     .then(res => this.props.refresh())
      .then(this.toggleConfirmModal);
  };
  render() {
@@ -53,9 +57,15 @@ class ComponentList extends Component {
          <div className="col-md-12">
            <div className="card p-3">
              <div className="mb-3">
-               <button onClick={() => this.toggleDetailModal(this.state.activeComponent)} className="btn btn-primary">
+               <button onClick={() => this.toggleDetailModal({title: ""})} className="btn btn-primary">
                  Add arrangement map component
                </button>
+             </div>
+             <div style={{ height: 400 }}>
+              <SortableTree
+                treeData={this.props.items}
+                onChange={this.props.onChange}
+              />
              </div>
              <ul className="list-group list-group-flush">
               {this.props.items ? (this.props.items.map(item => (

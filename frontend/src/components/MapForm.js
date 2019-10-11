@@ -38,6 +38,7 @@ class MapForm extends Component {
    this.setState({ activeMap });
  };
  handleSubmit = map => {
+   console.log(map)
    if (map.id) {
      axios
        .put(`/api/maps/${map.id}/`, map)
@@ -46,7 +47,10 @@ class MapForm extends Component {
    }
    axios
      .post("/api/maps/", map)
-     .then(res => this.refreshMap());
+     .then(res => window.location = `/maps/${res.data.id}`);
+ };
+ handleTreeChange = newItems => {
+   this.handleChange({"target": {"name": "children", "value": newItems}})
  };
  render() {
    return (
@@ -69,6 +73,7 @@ class MapForm extends Component {
             activeMap={this.state.activeMap}
             items={this.state.activeMap.children}
             refresh={this.refreshMap}
+            onChange={this.handleTreeChange}
           />
         ) : null}
         <div className="mt-4">
