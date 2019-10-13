@@ -27,27 +27,27 @@ class ComponentList extends Component {
    if (item.id) {
      axios
        .put(`/api/components/${item.id}/`, item)
-       .then(res => this.setState({detailModal: false}))
-       .then(this.props.refresh());
+       .then(res => this.props.refresh())
+       .then(this.setState({detailModal: false}));
      return;
    }
    axios
      .post("/api/components/", item)
-     .then(res => this.setState({detailModal: false}))
-     .then(this.props.refresh());
+     .then(res => this.props.refresh())
+     .then(this.setState({detailModal: false}));
  };
  handleDelete = component => {
    axios
      .delete(`/api/components/${component.id}`)
-     .then(this.toggleConfirmModal)
-     .then(res => this.props.refresh());
+     .then(res => this.props.refresh())
+     .then(this.toggleConfirmModal);
  };
  nodeMove = e => {
    e.node.parent = e.nextParentNode ? e.nextParentNode.id : null
    // tree order
    this.setState({activeComponent: e.node})
    this.handleSubmit(this.state.activeComponent)
- }
+ };
  render() {
   return (
      <div>
