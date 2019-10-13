@@ -27,26 +27,20 @@ class ComponentList extends Component {
    if (item.id) {
      axios
        .put(`/api/components/${item.id}/`, item)
-       .then(res => this.setState({detailModal: false}));
+       .then(res => this.setState({detailModal: false}))
+       .then(this.props.refresh());
      return;
    }
    axios
      .post("/api/components/", item)
-     .then(res => this.setState({detailModal: false}));
- };
- handleChange = e => {
-   let { name, value } = e.target;
-   if (e.target.type === "checkbox") {
-     value = e.target.checked;
-   }
-   const activeComponent = { ...this.state.activeComponent, [name]: value };
-   this.setState({ activeComponent });
+     .then(res => this.setState({detailModal: false}))
+     .then(this.props.refresh());
  };
  handleDelete = component => {
    axios
      .delete(`/api/components/${component.id}`)
-     .then(res => this.props.refresh())
-     .then(this.toggleConfirmModal);
+     .then(this.toggleConfirmModal)
+     .then(res => this.props.refresh());
  };
  nodeMove = e => {
    e.node.parent = e.nextParentNode ? e.nextParentNode.id : null
@@ -107,6 +101,8 @@ class ComponentList extends Component {
                  toggle={this.toggleConfirmModal}
                  onConfirm={() => this.handleDelete(this.state.activeComponent)}
                  message={`Are you sure you want to delete ${this.state.activeComponent.title}?`}
+                 confirmMessage="Yes, delete it"
+                 cancelMessage="Nope, cancel"
                />) : null}
            </div>
          </div>

@@ -58,8 +58,6 @@ export default class CustomModal extends Component {
               />
             </FormGroup>
           </Form>
-          <p>Map: {this.state.activeMap.title}</p>
-          <p>Parent: {this.state.activeComponent.parent}</p>
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={() => this.onSubmit(this.state.activeComponent)}>

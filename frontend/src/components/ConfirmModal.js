@@ -10,7 +10,7 @@ import {
 
 export default class ConfirmModal extends Component {
   render() {
-    const { toggle, message, onConfirm } = this.props;
+    const { toggle, message, onConfirm, confirmMessage, cancelMessage } = this.props;
     return (
       <Modal isOpen={true} toggle={toggle}>
         <ModalHeader toggle={toggle}> Confirm Delete </ModalHeader>
@@ -19,10 +19,10 @@ export default class ConfirmModal extends Component {
         </ModalBody>
         <ModalFooter>
           <Button color="danger" onClick={onConfirm}>
-            Yes, delete it
+            {confirmMessage}
           </Button>
           <Button color="secondary" onClick={toggle}>
-            Nope, cancel
+            {cancelMessage}
           </Button>
         </ModalFooter>
       </Modal>
