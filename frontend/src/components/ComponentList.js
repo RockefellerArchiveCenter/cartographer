@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import SortableTree from 'react-sortable-tree';
+import SortableTree, { walk } from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
 import ComponentModal from './ComponentModal'
 import ConfirmModal from './ConfirmModal'
@@ -17,7 +17,6 @@ class ComponentList extends Component {
  }
  toggleDetailModal = (item, onSave) => {
    this.setState({ activeComponent: item, detailModal: !this.state.detailModal });
-   this.props.refresh();
  };
  toggleConfirmModal = item => {
    this.setState({ activeComponent: item, confirmModal: !this.state.confirmModal });
@@ -43,10 +42,19 @@ class ComponentList extends Component {
      .then(this.toggleConfirmModal);
  };
  nodeMove = e => {
+   const getNodeKey = ({ node }) => node.id;
    e.node.parent = e.nextParentNode ? e.nextParentNode.id : null
-   // tree order
    this.setState({activeComponent: e.node})
-   this.handleSubmit(this.state.activeComponent)
+   walk({
+     treeData: e.treeData,
+     getNodeKey,
+     callback: (node) => {
+       console.log(node.treeIndex)
+       node.node.tree_index = node.treeIndex
+       this.handleSubmit(node.node)
+     },
+     ignoreCollapsed: false
+   })
  };
  render() {
   return (
@@ -55,7 +63,7 @@ class ComponentList extends Component {
          <div className="col-md-12">
            <div className="card p-3">
              <div className="mb-3">
-               <button onClick={() => this.toggleDetailModal({title: ""})} className="btn btn-primary">
+               <button onClick={() => this.toggleDetailModal({title: "", tree_index: this.props.items.length+1})} className="btn btn-primary">
                  Add arrangement map component
                </button>
              </div>
@@ -64,11 +72,11 @@ class ComponentList extends Component {
                 treeData={this.props.items}
                 onChange={this.props.onChange}
                 onMoveNode={this.nodeMove}
-                generateNodeProps={({ node, path }) => ({
+                generateNodeProps={({ node }) => ({
                   buttons: [
                     <button
                       className="btn btn-sm btn-success mr-2"
-                      onClick={() => this.toggleDetailModal({title: "", parent: node.id})}
+                      onClick={() => this.toggleDetailModal({title: "", parent: node.id, tree_index: this.props.items.length+1})}
                     >
                       Add Child
                     </button>,
