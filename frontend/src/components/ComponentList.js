@@ -16,9 +16,7 @@ class ComponentList extends Component {
    };
  }
  toggleDetailModal = (item, onSave) => {
-   console.log(item)
-   this.setState({ activeComponent: item, onSave: onSave, detailModal: !this.state.detailModal });
-   console.log(this.state)
+   this.setState({ activeComponent: item, detailModal: !this.state.detailModal });
    this.props.refresh();
  };
  toggleConfirmModal = item => {
@@ -29,12 +27,12 @@ class ComponentList extends Component {
    if (item.id) {
      axios
        .put(`/api/components/${item.id}/`, item)
-       .then(res => this.toggleDetailModal());
+       .then(res => this.setState({detailModal: false}));
      return;
    }
    axios
      .post("/api/components/", item)
-     .then(res => this.toggleDetailModal());
+     .then(res => this.setState({detailModal: false}));
  };
  handleChange = e => {
    let { name, value } = e.target;
@@ -50,8 +48,14 @@ class ComponentList extends Component {
      .then(res => this.props.refresh())
      .then(this.toggleConfirmModal);
  };
+ nodeMove = e => {
+   e.node.parent = e.nextParentNode ? e.nextParentNode.id : null
+   // tree order
+   this.setState({activeComponent: e.node})
+   this.handleSubmit(this.state.activeComponent)
+ }
  render() {
-   return (
+  return (
      <div>
        <div className="row">
          <div className="col-md-12">
@@ -65,46 +69,31 @@ class ComponentList extends Component {
               <SortableTree
                 treeData={this.props.items}
                 onChange={this.props.onChange}
+                onMoveNode={this.nodeMove}
+                generateNodeProps={({ node, path }) => ({
+                  buttons: [
+                    <button
+                      className="btn btn-sm btn-success mr-2"
+                      onClick={() => this.toggleDetailModal({title: "", parent: node.id})}
+                    >
+                      Add Child
+                    </button>,
+                    <button
+                      className="btn btn-sm btn-secondary mr-2"
+                      onClick={() => this.toggleDetailModal(node)}
+                    >
+                      Edit
+                    </button>,
+                    <button
+                      className="btn btn-sm btn-danger"
+                      onClick={() => this.toggleConfirmModal(node)}
+                    >
+                      Remove
+                    </button>,
+                  ],
+                })}
               />
              </div>
-             <ul className="list-group list-group-flush">
-              {this.props.items ? (this.props.items.map(item => (
-                 <li
-                   key={item.id}
-                   className="list-group-item d-flex justify-content-between align-items-center"
-                 >
-                   <span
-                     className="mr-2"
-                   >
-                     {item.title}
-                   </span>
-                   <span>
-                     <button
-                       onClick={() => this.toggleDetailModal(this.state.activeComponent)}
-                       onChange={this.handleChange}
-                       className="btn btn-success mr-2"
-                     >
-                       Add child
-                     </button>
-                     <button
-                       onClick={() => this.toggleDetailModal(item)}
-                       onChange={this.handleChange}
-                       className="btn btn-secondary mr-2"
-                     >
-                       Edit
-                     </button>
-                     <button
-                       onClick={() => this.toggleConfirmModal(item)}
-                       onChange={this.handleChange}
-                       className="btn btn-danger"
-                     >
-                       Delete
-                     </button>
-                   </span>
-                 </li>
-               ))) : "No Arrangement Map Components yet"
-             }
-             </ul>
              {this.state.detailModal ? (
                <ComponentModal
                  activeComponent={this.state.activeComponent}

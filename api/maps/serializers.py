@@ -6,7 +6,7 @@ from .models import ArrangementMap, ArrangementMapComponent, DeletedArrangementM
 class ArrangementMapComponentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArrangementMapComponent
-        fields = ('title', 'map')
+        fields = ('id', 'title', 'map', 'parent', 'archivesspace_uri', 'tree_id')
 
 
 class ArrangementMapComponentListSerializer(serializers.ModelSerializer):
@@ -25,12 +25,13 @@ class ArrangementMapSerializer(serializers.ModelSerializer):
 
     def process_tree_item(self, objects, tree):
         for item in objects:
-            parent = item.parent if item.parent else item.map
+            # parent = item.parent if item.parent else item.map
+            parent = item.parent.id if item.parent else None
             ref = self.get_ref(item)
             if item.is_leaf_node():
-                tree.append({'id': item.pk,'title': item.title, 'ref': ref, 'parent': self.get_ref(parent)})
+                tree.append({'id': item.pk, 'title': item.title, 'ref': ref, 'parent': parent, 'tree_id': item.tree_id})
             else:
-                tree.append({'id': item.pk, 'title': item.title, 'ref': ref, 'parent': self.get_ref(parent), 'children': []})
+                tree.append({'id': item.pk, 'title': item.title, 'ref': ref, 'parent': parent, 'tree_id': item.tree_id, 'children': []})
                 self.process_tree_item(item.children.all(), tree[-1].get('children'))
         return tree
 
