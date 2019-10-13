@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import SortableTree, { walk } from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
-import ComponentModal from './ComponentModal'
-import ConfirmModal from './ConfirmModal'
+import { MapComponentModal, ConfirmModal } from './Modals'
 import axios from "axios";
 
 
@@ -97,7 +96,7 @@ class ComponentList extends Component {
               />
              </div>
              {this.state.detailModal ? (
-               <ComponentModal
+               <MapComponentModal
                  activeComponent={this.state.activeComponent}
                  activeMap={this.props.activeMap}
                  toggle={this.toggleDetailModal}

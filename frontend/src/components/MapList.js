@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ConfirmModal from "./ConfirmModal";
+import { ConfirmModal } from "./Modals";
 import axios from "axios";
 
 

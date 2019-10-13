@@ -12,7 +12,7 @@ import {
   Label
 } from "reactstrap";
 
-export default class CustomModal extends Component {
+export class MapComponentModal extends Component {
   constructor(props) {
     super(props);
     this.toggle = this.props.toggle
@@ -65,6 +65,28 @@ export default class CustomModal extends Component {
           </Button>
           <Button color="danger" onClick={toggle}>
             Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
+    );
+  }
+}
+
+export class ConfirmModal extends Component {
+  render() {
+    const { toggle, message, onConfirm, confirmMessage, cancelMessage } = this.props;
+    return (
+      <Modal isOpen={true} toggle={toggle}>
+        <ModalHeader toggle={toggle}> Confirm Delete </ModalHeader>
+        <ModalBody>
+          {message}
+        </ModalBody>
+        <ModalFooter>
+          <Button color="danger" onClick={onConfirm}>
+            {confirmMessage}
+          </Button>
+          <Button color="secondary" onClick={toggle}>
+            {cancelMessage}
           </Button>
         </ModalFooter>
       </Modal>
