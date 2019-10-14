@@ -70,6 +70,8 @@ class MapList extends Component {
              toggle={this.toggleModal}
              onConfirm={() => this.handleDelete(this.state.activeMap)}
              message={`Are you sure you want to delete ${this.state.activeMap.title}?`}
+             cancelButtonText="No, cancel"
+             confirmButtonText="Yes, delete"
            />
          ) : null}
        </div>
