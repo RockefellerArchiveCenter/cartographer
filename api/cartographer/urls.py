@@ -3,7 +3,8 @@ from django.urls import path, re_path, include
 from rest_framework import routers
 from rest_framework.schemas import get_schema_view
 
-from maps.views import ArrangementMapViewset, ArrangementMapComponentViewset, DeletedArrangementMapView
+from maps.views import (ArrangementMapViewset, ArrangementMapComponentViewset,
+                        DeletedArrangementMapView, ResourceFetcherView)
 
 router = routers.DefaultRouter()
 router.register(r'maps', ArrangementMapViewset, 'arrangementmap')
@@ -20,4 +21,5 @@ urlpatterns = [
     re_path(r'^schema/', schema_view, name='schema'),
     path('api/', include(router.urls)),
     path('api/delete-feed/', DeletedArrangementMapView.as_view(), name='delete-feed'),
+    re_path('api/fetch-resource/(?P<resource_id>\d+)$', ResourceFetcherView.as_view(), name='fetch-resource')
 ]

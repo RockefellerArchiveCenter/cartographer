@@ -28,9 +28,13 @@ class ArrangementMapSerializer(serializers.ModelSerializer):
             parent = item.parent.id if item.parent else None
             ref = self.get_ref(item)
             if item.is_leaf_node():
-                tree.append({'id': item.pk, 'title': item.title, 'ref': ref, 'parent': parent, 'tree_index': item.tree_index})
+                tree.append({'id': item.pk, 'title': item.title, 'ref': ref,
+                             'parent': parent, 'archivesspace_uri': item.archivesspace_uri,
+                             'tree_index': item.tree_index})
             else:
-                tree.append({'id': item.pk, 'title': item.title, 'ref': ref, 'parent': parent, 'tree_index': item.tree_index, 'children': []})
+                tree.append({'id': item.pk, 'title': item.title, 'ref': ref,
+                             'parent': parent, 'archivesspace_uri': item.archivesspace_uri,
+                             'tree_index': item.tree_index, 'children': []})
                 self.process_tree_item(item.children.all().order_by('tree_index'), tree[-1].get('children'))
         return tree
 
@@ -42,10 +46,7 @@ class ArrangementMapSerializer(serializers.ModelSerializer):
 
     def get_ref(self, obj):
         try:
-            if obj.archivesspace_uri:
-                return obj.archivesspace_uri
-            else:
-                return reverse('arrangementmapcomponent-detail', kwargs={'pk': obj.pk})
+            return reverse('arrangementmapcomponent-detail', kwargs={'pk': obj.pk})
         except:
             return reverse('arrangementmap-detail', kwargs={'pk': obj.pk})
 

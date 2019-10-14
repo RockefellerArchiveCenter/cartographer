@@ -1,7 +1,11 @@
 from datetime import datetime
 
+from asnake.aspace import ASpace
+from asnake.jsonmodel import JSONModelObject
 from django.utils.timezone import make_aware
 from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from cartographer import settings
@@ -63,3 +67,18 @@ class DeletedArrangementMapView(ListAPIView):
     def get_queryset(self):
         deleted_since = int(self.request.query_params.get('deleted_since', 0))
         return DeletedArrangementMap.objects.filter(deleted__gte=make_aware(datetime.fromtimestamp(deleted_since))).order_by('-deleted')
+
+
+class ResourceFetcherView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            self.repo = ASpace(baseurl=settings.ASPACE['baseurl'],
+                               username=settings.ASPACE['username'],
+                               password=settings.ASPACE['password']).repositories(settings.ASPACE['repo_id'])
+            resource = self.repo.resources(kwargs.get('resource_id'))
+            if isinstance(resource, JSONModelObject):
+                return Response(resource.json(), status=200)
+            return Response(resource['error'], status=404)
+        except Exception as e:
+            return Response(str(e), status=500)

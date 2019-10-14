@@ -11,7 +11,7 @@ class ComponentList extends Component {
    this.state = {
      detailModal: false,
      confirmModal: false,
-     activeComponent: {title: ""},
+     activeComponent: {title: "", archivesspace_uri: ""},
    };
  }
  toggleDetailModal = (item, onSave) => {
@@ -62,7 +62,7 @@ class ComponentList extends Component {
          <div className="col-md-12">
            <div className="card p-3">
              <div className="mb-3">
-               <button onClick={() => this.toggleDetailModal({title: "", tree_index: this.props.items.length+1})} className="btn btn-primary">
+               <button onClick={() => this.toggleDetailModal({title: "", archivesspace_uri: ""})} className="btn btn-primary">
                  Add arrangement map component
                </button>
              </div>
@@ -75,7 +75,7 @@ class ComponentList extends Component {
                   buttons: [
                     <button
                       className="btn btn-sm btn-success mr-2"
-                      onClick={() => this.toggleDetailModal({title: "", parent: node.id, tree_index: this.props.items.length+1})}
+                      onClick={() => this.toggleDetailModal({title: "", archivesspace_uri: "", parent: node.id})}
                     >
                       Add Child
                     </button>,
