@@ -16,11 +16,15 @@ class MapForm extends Component {
    this.state = {
      activeMap: {"title": "", },
      addModal: false,
+     editable: this.props.match.params.id ? false : true,
    };
  };
  componentDidMount() {
    this.refreshMap();
  };
+ toggleEditable = () => {
+   this.setState({editable: !this.state.editable})
+ }
  refreshMap = () => {
    if (this.props.match.params.id) {
      axios
@@ -42,12 +46,14 @@ class MapForm extends Component {
    if (map.id) {
      axios
        .put(`/api/maps/${map.id}/`, map)
-       .then(res => this.refreshMap());
+       .then(res => this.refreshMap())
+       .then(this.toggleEditable());
      return;
    }
    axios
      .post("/api/maps/", map)
-     .then(res => window.location = `/maps/${res.data.id}`);
+     .then(res => window.location = `/maps/${res.data.id}`)
+     .then(this.toggleEditable());
  };
  handleTreeChange = newItems => {
    this.handleChange({"target": {"name": "children", "value": newItems}})
@@ -56,8 +62,8 @@ class MapForm extends Component {
    return (
      <div>
       <Form className="row mb-4" inline={true}>
-        <FormGroup className="col-md-10">
-          <Label for="title">Title</Label>
+        <FormGroup className="col-md-8">
+          <Label for="title" hidden>Title</Label>
             <Input
               className="col-md-12"
               type="text"
@@ -67,6 +73,22 @@ class MapForm extends Component {
               placeholder="Enter Arrangement Map title"
             />
           </FormGroup>
+          {this.state.editable ? (
+          <div>
+            <Button color="primary" className="mr-2" onClick={() => this.handleSubmit(this.state.activeMap)}>
+            Save Title
+            </Button>
+            <Button color="danger" className="mr-2" onClick={this.toggleEditable}>
+            Cancel
+            </Button>
+          </div>
+        ) : (
+          <div>
+            <Button color="primary" className="mr-2" onClick={this.toggleEditable}>
+            Edit Title
+            </Button>
+          </div>
+        )}
         </Form>
         {this.state.activeMap.id ? (
           <ComponentList
@@ -76,14 +98,6 @@ class MapForm extends Component {
             onChange={this.handleTreeChange}
           />
         ) : null}
-        <div className="mt-4">
-          <Button color="primary" className="mr-2" onClick={() => this.handleSubmit(this.state.activeMap)}>
-            Save
-          </Button>
-          <a color="danger" className="btn btn-danger" href="/">
-            Cancel
-          </a>
-        </div>
       </div>
     );
   }
