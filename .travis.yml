@@ -10,17 +10,18 @@ before_install:
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
+  - cd api
   - cp cartographer/config.py.example cartographer/config.py
   - docker-compose up -d
   - sleep 20s
-  - docker-compose exec cartographer-web pip install coverage
+  - docker-compose exec cartographer-backend pip install coverage
 install: true
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
-  - docker-compose exec cartographer-web coverage run manage.py test
+  - docker-compose exec cartographer-backend coverage run manage.py test
 after_script:
-  - docker-compose exec cartographer-web coverage xml
+  - docker-compose exec cartographer-backend coverage xml
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT

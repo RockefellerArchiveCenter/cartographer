@@ -5,15 +5,24 @@ services:
     image: postgres:10.4
     volumes:
       - cartographerdbvolume:/var/lib/postgresql/data/
-  cartographer-web:
-    build: .
-    entrypoint: /code/entrypoint.sh
+  cartographer-backend:
+    build: ./api
+    entrypoint: /code/api/entrypoint.sh
     volumes:
-      - .:/code
+      - ./api:/code/api
     ports:
-      - "8007:8007"
+      - "8000:8000"
     depends_on:
       - cartographer-db
+  cartographer-frontend:
+    build: ./frontend
+    command: ["yarn", "start"]
+    volumes:
+      - ./frontend:/code/frontend
+      - node-modules:/code/frontend/node_modules
+    ports:
+      - "3000:3000"
 
 volumes:
   cartographerdbvolume:
+  node-modules:
