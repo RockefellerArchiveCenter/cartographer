@@ -108,8 +108,8 @@ class ComponentList extends Component {
                  toggle={this.toggleConfirmModal}
                  onConfirm={() => this.handleDelete(this.state.activeComponent)}
                  message={`Are you sure you want to delete ${this.state.activeComponent.title}?`}
-                 confirmMessage="Yes, delete it"
-                 cancelMessage="Nope, cancel"
+                 confirmButtonText="Yes, delete it"
+                 cancelButtonText="Nope, cancel"
                />) : null}
            </div>
          </div>
