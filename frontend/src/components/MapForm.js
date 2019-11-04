@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ComponentList from './ComponentList'
+import { walk } from 'react-sortable-tree';
 import axios from "axios";
 
 import {
@@ -55,8 +56,32 @@ class MapForm extends Component {
      .then(res => window.location = `/maps/${res.data.id}`)
      .then(this.toggleEditable());
  };
+ handleComponentSubmit = item => {
+   item.map = this.state.activeMap.id;
+   if (item.id) {
+     return axios
+       .put(`/api/components/${item.id}/`, item)
+       .then(res => { return res.data })
+       .catch(err => console.log(err))
+    }
+    return axios
+       .post("/api/components/", item)
+       .then(res => { return res.data })
+       .catch(err => console.log(err));
+ };
  handleTreeChange = newItems => {
    this.handleChange({"target": {"name": "children", "value": newItems}})
+   walk({
+     treeData: newItems,
+     getNodeKey: ({ node }) => node.id,
+     callback: (node) => {
+       node.node.parent = node.parentNode ? node.parentNode.id : null
+       node.node.tree_index = node.treeIndex
+       this.handleComponentSubmit(node.node)
+        .then((res) => {node.node.id = res.id});
+     },
+     ignoreCollapsed: false
+   });
  };
  render() {
    return (
@@ -93,7 +118,7 @@ class MapForm extends Component {
         {this.state.activeMap.id ? (
           <ComponentList
             activeMap={this.state.activeMap}
-            items={this.state.activeMap.children}
+            items={this.state.activeMap.children ? this.state.activeMap.children : []}
             refresh={this.refreshMap}
             onChange={this.handleTreeChange}
           />

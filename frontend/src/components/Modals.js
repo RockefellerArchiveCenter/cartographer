@@ -21,7 +21,6 @@ export class MapComponentModal extends Component {
     super(props);
     this.toggle = this.props.toggle
     this.onSubmit = this.props.onSubmit
-    this.onChange = this.props.onChange
     this.state = {
       activeMap: this.props.activeMap,
       activeComponent: this.props.activeComponent,
@@ -111,7 +110,7 @@ export class MapComponentModal extends Component {
         <ModalFooter>
           <Button
             color="primary"
-            onClick={() => this.onSubmit(this.state.activeComponent)}
+            onClick={() => this.onSubmit(this.state.activeComponent, this.props.path)}
             disabled={!this.state.activeComponent.title}>
             Save
           </Button>
