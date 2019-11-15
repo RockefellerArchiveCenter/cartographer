@@ -61,13 +61,14 @@ class ComponentList extends Component {
  };
  nodeDelete = e => {
    let {node, treeIndex, path} = e;
-   this.handleDelete(node)
+   console.log(node, treeIndex, path);
    const {treeData} = removeNode({
      treeData: this.props.items,
      path: path,
-     getNodeKey: ({node}) => treeIndex
+     getNodeKey: ({node}) => node.tree_index
    });
    this.onChange(treeData);
+   this.handleDelete(node)
    this.setState({confirmModal: false})
  };
  nodeMove = e => {
