@@ -60,8 +60,7 @@ class ComponentList extends Component {
    return treeData
  };
  nodeDelete = e => {
-   let {node, treeIndex, path} = e;
-   console.log(node, treeIndex, path);
+   let {node, path} = e;
    const {treeData} = removeNode({
      treeData: this.props.items,
      path: path,
