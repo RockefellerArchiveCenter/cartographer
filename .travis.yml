@@ -22,7 +22,6 @@ before_script:
   - ./cc-test-reporter before-build
 script:
   - docker-compose exec cartographer-backend coverage run manage.py test
-  - docker-compose exec cartographer-frontend yarn test
 after_script:
   - docker-compose exec cartographer-backend coverage xml
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
