@@ -6,15 +6,20 @@ cartographer is part of [Project Electron](https://github.com/RockefellerArchive
 
 [![Build Status](https://travis-ci.org/RockefellerArchiveCenter/cartographer.svg?branch=master)](https://travis-ci.org/RockefellerArchiveCenter/cartographer)
 
-## Setup
+## Local Development
 
 Install [git](https://git-scm.com/) and clone the repository
 
     $ git clone https://github.com/RockefellerArchiveCenter/cartographer.git
 
-Install [Docker](https://store.docker.com/search?type=edition&offering=community) and run docker-compose from the root directory
+Initialize and update git submodules
 
     $ cd cartographer
+    $ git submodule init
+    $ git submodule update
+
+With [Docker](https://store.docker.com/search?type=edition&offering=community) installed, run docker-compose from the root directory
+
     $ docker-compose up
 
 Once the application starts successfully, you should be able to access the application in your browser at `http://localhost:8000`
@@ -28,11 +33,16 @@ Or, if you want to remove all data
     $ docker-compose down -v
 
 
-### Deploying in AWS Fargate
+## Production Deployment
 
-To deploy in AWS Fargate, install the AWS ECS-CLI, set up the necessary configurations which specifies a cluster, VPC and then:
+To deploy on vSphere, run the following command:
 
-    $ ecs-cli compose --file docker-compose-aws.yml --project-name cartographer service up --create-log-groups --cluster-config [config]
+    $ docker-compose -H {VCH host URL} --tlscacert="{path to ca.pem}" -f docker-compose.prod.yml up -d
+
+To update (after changes have been made to any images):
+
+    $ docker-compose -H {VCH host URL} --tlscacert="{path to ca.pem}" -f docker-compose.prod.yml pull
+
 
 
 ### Routes
