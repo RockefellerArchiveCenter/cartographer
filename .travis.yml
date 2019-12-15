@@ -10,8 +10,8 @@ before_install:
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
-  - cd api
-  - cp cartographer/config.py.example cartographer/config.py
+  - cd cartographer_backend
+  - cp cartographer_backend/config.py.example cartographer_backend/config.py
   - docker-compose up -d
   - sleep 20s
   - docker-compose exec cartographer-backend pip install coverage
