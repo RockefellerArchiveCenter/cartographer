@@ -1,0 +1,40 @@
+version: '2'
+
+services:
+  cartographer-db:
+    image: postgres:10.4
+    volumes:
+      - cartographerdbvolume:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.prod.db
+  cartographer-backend:
+    # image: rockarch/cartographer_backend:latest
+    build: ./cartographer_backend/
+    command: gunicorn cartographer_backend.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/code/cartographer_backend/static
+    expose:
+      - 8000
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - cartographer-db
+  cartographer-frontend:
+    image: rockarch/cartographer_frontend:latest
+    command: ["yarn", "start"]
+    ports:
+      - "3000:3000"
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/code/cartographer_backend/static
+    ports:
+      - 1337:80
+    depends_on:
+      - cartographer-backend
+
+volumes:
+  cartographerdbvolume:
+    driver: local
+  static_volume:
+    driver: local
