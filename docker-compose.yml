@@ -5,10 +5,8 @@ services:
     image: postgres:10.4
     volumes:
       - cartographerdbvolume:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=cartographer_backend
-      - POSTGRES_PASSWORD=cartographer_backend
-      - POSTGRES_DB=cartographer_backend_dev
+    env_file:
+      - ./.env.dev.db
   cartographer-backend:
     build: ./cartographer_backend
     command: python manage.py runserver 0.0.0.0:8000

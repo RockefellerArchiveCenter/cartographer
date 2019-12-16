@@ -35,11 +35,15 @@ Or, if you want to remove all data
 
 ## Production Deployment
 
-To deploy on vSphere, run the following command:
+This repository is optimized for deployment on vSphere. Production deployment is achieved using an additional docker-compose file (`docker-compose.prod.yml`) as well as production-specific environment variables.
+
+First, copy `.env.dev` and `.env.dev.db` to `.env.prod` and `.env.prod.db`, respectively. You can then make the necessary changes to point your app at a production database and ArchivesSpace instance, etc.
+
+Once you have updated the environment variables, run the following command:
 
     $ docker-compose -H {VCH host URL} --tlscacert="{path to ca.pem}" -f docker-compose.prod.yml up -d
 
-To update (after changes have been made to any images):
+Any changes to the frontend or backend must be built in Docker Hub before they can be deployed to production. To deploy updated images, run the following command:
 
     $ docker-compose -H {VCH host URL} --tlscacert="{path to ca.pem}" -f docker-compose.prod.yml pull
 
