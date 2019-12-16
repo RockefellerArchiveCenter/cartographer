@@ -61,3 +61,9 @@ Any changes to the frontend or backend must be built in Docker Hub before they c
 ## License
 
 This code is released under an [MIT License](LICENSE).
+
+
+## References
+
+Production container implementation relies heavily on:
+- [Dockerizing Django with Postgres, Gunicorn, and Nginx](https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx/)
