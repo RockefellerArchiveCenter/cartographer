@@ -67,3 +67,8 @@ This code is released under an [MIT License](LICENSE).
 
 Production container implementation relies heavily on:
 - [Dockerizing Django with Postgres, Gunicorn, and Nginx](https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx/)
+- [A template project for a Dockerised Django app](https://github.com/hendrikfrentrup/docker-django)
+- [Dockerizing a React App](https://mherman.org/blog/dockerizing-a-react-app/)
+- [So you want to Dockerize your React app?](https://medium.com/greedygame-engineering/so-you-want-to-dockerize-your-react-app-64fbbb74c217)
+- [Create React App + Docker — multi-stage build example. Let’s talk about artifacts!](https://medium.com/@shakyShane/lets-talk-about-docker-artifacts-27454560384f)
+- [Sample nginx config](https://github.com/facebook/create-react-app/issues/1087#issuecomment-426916800)

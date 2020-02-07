@@ -20,12 +20,13 @@ services:
       - cartographer-db
   cartographer-frontend:
     build: ./cartographer_frontend
-    command: ["yarn", "start"]
     volumes:
       - ./cartographer_frontend:/code/cartographer_frontend
       - node-modules:/code/cartographer_frontend/node_modules
     ports:
-      - "3000:3000"
+      - "3000:80"
+    depends_on:
+      - cartographer-backend
 
 volumes:
   cartographerdbvolume:
