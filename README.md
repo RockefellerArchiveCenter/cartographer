@@ -48,6 +48,11 @@ Any changes to the frontend or backend must be built in Docker Hub before they c
     $ docker-compose -H {VCH host URL} --tlscacert="{path to ca.pem}" -f docker-compose.prod.yml pull
 
 
+### Environment variables
+
+In order to deploy this application using the production Docker Compose file, you will need to create two [env files](https://docs.docker.com/compose/env-file/) in the root of this repository, named `.env.prod` and `.env.prod.db`. See `.env.dev` and `.env.dev.db` for examples of the variables that should be included.
+
+
 
 ### Routes
 
