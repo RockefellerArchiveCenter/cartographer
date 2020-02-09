@@ -27,16 +27,21 @@ services:
     depends_on:
       - cartographer-backend
   nginx:
-    image: rockarch/cartographer_nginx:latest
+    image: rockarch/django_nginx:latest
     ports:
       - "8001:8001"
     volumes:
       - static_volume:/code/nginx/static/
     depends_on:
       - cartographer-backend
+    environment:
+      - LISTEN_PORT=8001
+      - SERVER_HOST=cartographer-backend
+      - SERVER_PORT=8000
+      - STATIC_DIR=/code/nginx/static/
 
 volumes:
   cartographerdbvolume:
-    driver: vsphere
+    driver: local
   static_volume:
-    driver: vsphere
+    driver: local
