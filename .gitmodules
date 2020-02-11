@@ -1,0 +1,6 @@
+[submodule "cartographer_frontend"]
+	path = cartographer_frontend
+	url = https://github.com/RockefellerArchiveCenter/cartographer_frontend.git
+[submodule "cartographer_backend"]
+	path = cartographer_backend
+	url = https://github.com/RockefellerArchiveCenter/cartographer_backend.git

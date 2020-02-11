@@ -5,23 +5,28 @@ services:
     image: postgres:10.4
     volumes:
       - cartographerdbvolume:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.dev.db
   cartographer-backend:
-    build: ./api
-    entrypoint: /code/api/entrypoint.sh
+    build: ./cartographer_backend
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./api:/code/api
+      - ./cartographer_backend:/code/cartographer_backend
     ports:
       - "8000:8000"
+    env_file:
+      - ./.env.dev
     depends_on:
       - cartographer-db
   cartographer-frontend:
-    build: ./frontend
-    command: ["yarn", "start"]
+    build: ./cartographer_frontend
     volumes:
-      - ./frontend:/code/frontend
-      - node-modules:/code/frontend/node_modules
+      - ./cartographer_frontend:/code/cartographer_frontend
+      - node-modules:/code/cartographer_frontend/node_modules
     ports:
-      - "3000:3000"
+      - "3000:80"
+    depends_on:
+      - cartographer-backend
 
 volumes:
   cartographerdbvolume:
