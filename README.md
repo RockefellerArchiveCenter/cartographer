@@ -33,24 +33,19 @@ Or, if you want to remove all data
     $ docker-compose down -v
 
 
-## Production Deployment
+## Remote Deployment (development and production)
 
-This repository is optimized for deployment on vSphere. Production deployment is achieved using an additional docker-compose file (`docker-compose.prod.yml`) as well as production-specific environment variables.
+This repository is optimized for deployment on [vSphere](https://docs.vmware.com/en/VMware-vSphere/index.html). Deployment is achieved using additional docker-compose files (`docker-compose.dev.yml` and `docker-compose.prod.yml`) as well as environment variable files, whose filenames begin with `.env`.
 
-First, copy `.env.dev` and `.env.dev.db` to `.env.prod` and `.env.prod.db`, respectively. You can then make the necessary changes to point your app at a production database and ArchivesSpace instance, etc.
+First, copy `.env.dev`, `.env.dev.db` and `.env.dev.nginx` to `.env.prod`, `.env.prod.db` and `.env.prod.nginx`, respectively (you're just replacing `dev` with `prod`). You can then make the necessary changes to point your app at a production database and ArchivesSpace instance, etc.
 
 Once you have updated the environment variables, run the following command:
 
     $ docker-compose -H {VCH host URL} --tlscacert="{path to ca.pem}" -f docker-compose.prod.yml up -d
 
-Any changes to the frontend or backend must be built in Docker Hub before they can be deployed to production. To deploy updated images, run the following command:
+Any changes to the frontend or backend must be built in Docker Hub before they can be deployed to production. To pull updated images, run the following command:
 
     $ docker-compose -H {VCH host URL} --tlscacert="{path to ca.pem}" -f docker-compose.prod.yml pull
-
-
-### Environment variables
-
-In order to deploy this application using the production Docker Compose file, you will need to create two [env files](https://docs.docker.com/compose/env-file/) in the root of this repository, named `.env.prod` and `.env.prod.db`. See `.env.dev` and `.env.dev.db` for examples of the variables that should be included.
 
 
 
