@@ -8,7 +8,7 @@ services:
     ports:
       - "5432:5432"
     env_file:
-      - ./.env.prod.db
+      - ./.env.dev.db
   cartographer-backend:
     image: rockarch/cartographer_backend:0.4
     command: gunicorn cartographer_backend.wsgi:application --bind 0.0.0.0:8000
@@ -17,7 +17,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - ./.env.prod
+      - ./.env.dev
     depends_on:
       - cartographer-db
   cartographer-frontend:
@@ -35,8 +35,7 @@ services:
     depends_on:
       - cartographer-backend
     env_file:
-      - ./.env.prod.nginx
-
+      - ./.env.dev.nginx
 
 volumes:
   cartographerdbvolume:
