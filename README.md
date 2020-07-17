@@ -37,11 +37,11 @@ Or, if you want to remove all data
 
 This repository is optimized for deployment on [vSphere](https://docs.vmware.com/en/VMware-vSphere/index.html). Deployment is achieved using additional docker-compose files (`docker-compose.dev.yml` and `docker-compose.prod.yml`) as well as environment variable files, whose filenames begin with `.env`.
 
-First, copy `.env.dev`, `.env.dev.db` and `.env.dev.nginx` to `.env.prod`, `.env.prod.db` and `.env.prod.nginx`, respectively (you're just replacing `dev` with `prod`). You can then make the necessary changes to point your app at a production database and ArchivesSpace instance, etc.
+Production deployment requires a few additional steps. First, copy `.env.dev` and `.env.dev.nginx` to `.env.prod` and `.env.prod.nginx`, respectively (you're just replacing `dev` with `prod`). You can then make the necessary changes to point your app at a production database and ArchivesSpace instance, etc.
 
-Once you have updated the environment variables, run the following command:
+Once you have updated the environment variables, run the following command, substituting `docker-compose-file.yml` with the name of the production or development docker-compose file (see above) and substituting paths to certificates and the VCH host:
 
-    $ docker-compose -H {VCH host URL} --tlscacert="{path to ca.pem}" -f docker-compose.prod.yml up -d
+    $ docker-compose -H {VCH host URL} --tlsverify --tlscert="{path to cert.pem} --tlskey="{path to key.pem}" --tlscacert="{path to ca.pem}" -f docker-compose-file.yml up -d
 
 Any changes to the frontend or backend must be built in Docker Hub before they can be deployed to production. To pull updated images, run the following command:
 
