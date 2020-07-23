@@ -10,7 +10,7 @@ services:
     env_file:
       - ./.env.dev.db
   cartographer-backend:
-    image: rockarch/cartographer_backend:0.4
+    image: rockarch/cartographer_backend:0.5
     command: gunicorn cartographer_backend.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/code/cartographer_backend/static
@@ -21,7 +21,7 @@ services:
     depends_on:
       - cartographer-db
   cartographer-frontend:
-    image: rockarch/cartographer_frontend:0.3
+    image: rockarch/cartographer_frontend:0.4
     ports:
       - "3000:80"
     depends_on:
