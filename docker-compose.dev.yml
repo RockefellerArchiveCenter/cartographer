@@ -10,10 +10,8 @@ services:
     env_file:
       - ./.env.dev.db
   cartographer-backend:
-    image: rockarch/cartographer_backend:0.5
-    command: gunicorn cartographer_backend.wsgi:application --bind 0.0.0.0:8000
-    volumes:
-      - static_volume:/code/cartographer_backend/static
+    image: rockarch/cartographer_backend:0.6
+    command: apachectl -D FOREGROUND
     ports:
       - "8000:8000"
     env_file:
@@ -26,19 +24,7 @@ services:
       - "3000:80"
     depends_on:
       - cartographer-backend
-  nginx:
-    image: rockarch/django_nginx:latest
-    ports:
-      - "8001:8001"
-    volumes:
-      - static_volume:/code/nginx/static/
-    depends_on:
-      - cartographer-backend
-    env_file:
-      - ./.env.dev.nginx
 
 volumes:
   cartographerdbvolume:
-    driver: vsphere
-  static_volume:
     driver: vsphere
