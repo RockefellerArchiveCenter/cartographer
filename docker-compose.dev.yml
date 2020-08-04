@@ -19,7 +19,7 @@ services:
     depends_on:
       - cartographer-db
   cartographer-frontend:
-    image: rockarch/cartographer_frontend:0.4
+    image: rockarch/cartographer_frontend:0.5
     ports:
       - "3000:80"
     depends_on:
