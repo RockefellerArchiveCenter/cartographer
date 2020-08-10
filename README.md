@@ -37,7 +37,7 @@ Or, if you want to remove all data
 
 This repository is optimized for deployment on [vSphere](https://docs.vmware.com/en/VMware-vSphere/index.html). Deployment is achieved using additional docker-compose files (`docker-compose.dev.yml` and `docker-compose.prod.yml`) as well as environment variable files, whose filenames begin with `.env`.
 
-Production deployment requires a few additional steps. First, copy `.env.dev` and `.env.dev.nginx` to `.env.prod` and `.env.prod.nginx`, respectively (you're just replacing `dev` with `prod`). You can then make the necessary changes to point your app at a production database and ArchivesSpace instance, etc.
+Production deployment requires a few additional steps. First, copy `.env.dev` to `.env.prod` (you're just replacing `dev` with `prod`). You can then make the necessary changes to point your app at a production database and ArchivesSpace instance, etc.
 
 Once you have updated the environment variables, run the following command, substituting `docker-compose-file.yml` with the name of the production or development docker-compose file (see above) and substituting paths to certificates and the VCH host:
 
