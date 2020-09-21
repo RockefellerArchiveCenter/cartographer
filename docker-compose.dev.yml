@@ -10,7 +10,7 @@ services:
     env_file:
       - ./.env.dev.db
   cartographer-backend:
-    image: rockarch/cartographer_backend:0.6
+    image: rockarch/cartographer_backend:0.7
     command: apachectl -D FOREGROUND
     ports:
       - "8000:8000"
