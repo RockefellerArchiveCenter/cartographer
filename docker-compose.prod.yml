@@ -2,7 +2,7 @@ version: '2.4'
 
 services:
   cartographer-backend:
-    image: rockarch/cartographer_backend:0.6
+    image: rockarch/cartographer_backend:0.7
     command: apachectl -D FOREGROUND
     ports:
       - "8000:8000"
